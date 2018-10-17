@@ -14,4 +14,26 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AList.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dLinkWithFreeList.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LList.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
