@@ -18,10 +18,16 @@ private:
 	Link<T>* header;	//头哨兵
 	Link<T>* tailer;	//尾哨兵
 	Link<T>* curr;	//当前节点
-	int size;		//规模
+	int _size;		//规模
 
 protected:
-	void init();
+	void init()
+	{
+		header = new Link<T>;
+		tailer = new Link<T>;
+		header->next = tailer;
+		tailer->prev = header;
+	}
 
 	void removeAll();
 
@@ -64,11 +70,15 @@ public:
 	//remove pth node
 	T remove(int p);
 
-	virtual void length() const;
+
+	virtual int length() const;
+
 
 	virtual int currPos() const;
 
+
 	virtual void moveToPos(int pos);
+
 
 	virtual const T& getValue() const;
 
