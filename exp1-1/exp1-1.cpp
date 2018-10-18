@@ -16,7 +16,7 @@ int main()
 	L.append(a).append(b).append(c).append(d).append(e);
 	L.traverse(print);
 	cout << endl << "AList Size: " << L.length() << endl;
-	cout << "AList is empty: " << (L.isempty() ? "T" : "F") << endl;
+	cout << "AList is empty: " << (L.isempty() ? "True" : "False") << endl;
 	L.moveToPos(3);
 	cout << "3rd element of AList: " << L.getValue() << endl;
 	cout << "a's position is: " << L.search(a) << endl;
@@ -29,14 +29,14 @@ int main()
 	L.remove();
 	cout << "After removed 3rd element, AList element(s):";
 	L.traverse(print);
-	cout << endl;
+	cout << endl << endl;
 
 	LList<int> H;
 	cout << "LList element(s):";
 	H.append(a).append(b).append(c).append(d).append(e);
 	H.traverse(print);
 	cout << endl << "LList Size: " << H.length() << endl;
-	cout << "LList is empty: " << (H.isempty() ? "T" : "F") << endl;
+	cout << "LList is empty: " << (H.isempty() ? "True" : "False") << endl;
 	H.moveToPos(3);
 	cout << "3rd element of LList: " << H.getValue() << endl;
 	cout << "a's position is: " << H.search(a) << endl;
@@ -49,6 +49,8 @@ int main()
 	cout << "After removed 3rd element, LList element(s):";
 	H.traverse(print);
 	cout << endl;
+
+
 
 	system("pause");
 	return 0;
