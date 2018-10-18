@@ -43,7 +43,7 @@ public:
 	// Insert "it" at current position
 	void insert(const T& it)
 	{
-		Assert(listSize < maxSize, "List capacity exceeded");
+		Assert(_size < _maxSize, "List capacity exceeded");
 			for (int i = _size; i > _curr; --i)
 				_listArray[i] = _listArray[i - 1];
 			_listArray[_curr] = it;
@@ -51,10 +51,11 @@ public:
 	}
 
 	// Append an element at the end of the list.
-	void append(const T& it)
+	AList<T>& append(const T& it)
 	{
 		Assert(_size < _maxSize, "List capacity exceeded");
 		_listArray[_size++] = it;
+		return *this;
 	}
 
 	// Remove and return the current element.
@@ -102,12 +103,35 @@ public:
 	void moveToPos(int pos)
 	{
 		Assert(pos >= 0 && pos <= _size, "Pos out of range");
-		_curr = pos;
+		_curr = pos - 1; //从1开始数
 	}
 
 	const T& getValue() const
 	{
 		Assert(_curr >= 0 && _curr < _size, "No current element");
 		return _listArray[_curr];
+	}
+
+	void traverse(void(*visit)(T&))
+	{
+		for (int i = 0; i < _size; ++i)
+		{
+			visit(_listArray[i]);
+		}
+	}
+
+	bool isempty() const
+	{
+		return !_size;
+	}
+
+	int search(T& it) const
+	{
+		for (int i = 0; i < _size; ++i)
+		{
+			if (_listArray[i] == it)
+				return i + 1; //从1开始数
+		}
+		return -1;
 	}
 };

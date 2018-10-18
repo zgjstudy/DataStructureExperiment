@@ -16,13 +16,12 @@ private:
 	List(const List&) {}
 
 public:
+	List() {}
 	virtual ~List() {}	//虚析构
-
-	virtual init() = 0;	//初始化
 
 	virtual void insert(const T& item) = 0;	//在curr之后插入
 
-	virtual void append(const T& item) = 0;	//尾插入
+	virtual List<T>& append(const T& item) = 0;	//尾插入
 
 	virtual T remove() = 0;	//移除curr
 
@@ -41,4 +40,8 @@ public:
 	virtual void moveToPos(int pos) = 0;	//移动到pos号元素
 
 	virtual const T& getValue() const = 0;	//返回当前元素
+
+	virtual bool isempty() const = 0; //判断是否为空
+
+	virtual int search(T&) const = 0; //搜索
 };

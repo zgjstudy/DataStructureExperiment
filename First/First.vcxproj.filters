@@ -31,4 +31,9 @@
       <Filter>Dependency</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

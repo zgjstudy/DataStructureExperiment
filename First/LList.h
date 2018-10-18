@@ -31,7 +31,7 @@ protected:
 	}
 	
 public:
-	LList(int size = DefaultSize)
+	LList(int size = 10)
 	{
 		init();
 	}
@@ -100,11 +100,12 @@ public:
 	}
 
 	//insert as last
-	void append(const T& it)
+	LList<T>& append(const T& it)
 	{
 		Link<T>* temp = tailer->prev;
 		temp->next = tailer->prev = new Link<T>(it, temp, tailer);
 		_size++;
+		return *this;
 	}
 
 	//insert as first
@@ -122,7 +123,7 @@ public:
 		T tempE = curr->element;
 		Link<T>* temp = curr;
 		curr = curr->next;
-		temp->next = curr;
+		temp->prev->next = curr;
 		curr->prev = temp->prev;
 		delete temp;
 		_size--;
@@ -130,7 +131,14 @@ public:
 	}
 
 	//remove pth node
-	T remove(int p);
+	T remove(int p)
+	{
+		Link<T>* temp = curr;
+		moveToPos(p);
+		T tempE = remove();
+		curr = temp;
+		return tempE;
+	}
 
 	//return the size of the list
 	virtual int length() const
@@ -139,10 +147,27 @@ public:
 	}
 
 	//return current position
-	virtual int currPos() const;
+	virtual int currPos() const
+	{
+		int i = 0;
+		Link<T>* temp = header;
+		while (temp != curr)
+		{
+			i++;
+			temp = temp->next;
+		}
+		return i;
+	}
 
 	//move to position
-	virtual void moveToPos(int pos);
+	virtual void moveToPos(int pos)
+	{
+		curr = header;
+		while (pos--)
+		{
+			curr = curr->next;
+		}
+	}
 
 	//return current element
 	virtual const T& getValue() const
@@ -150,5 +175,33 @@ public:
 		return curr->element;
 	}
 
+	void traverse(void(*visit)(T&))
+	{
+		Link<T>* t = header->next;
+		while (t != tailer)
+		{
+			visit(t->element);
+			t = t->next;
+		}
+	}
+
+	bool isempty() const
+	{
+		return !_size;
+	}
+
+	int search(T& it) const
+	{
+		Link<T>* t = header->next;
+		int cnt = 1;
+		while (t != tailer)
+		{
+			if (t->element == it)
+				return cnt;
+			cnt++;
+			t = t->next;
+		}
+		return -1;
+	}
 };
 

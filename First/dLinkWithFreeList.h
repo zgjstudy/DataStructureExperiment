@@ -23,7 +23,7 @@ public:
 		:prev(pp), next(np) {}
 
 	Link(const T& it, Link* pp, Link* np)
-		:element(it), prev(pp), nextp(np) {}
+		:element(it), prev(pp), next(np) {}
 
 	void* operator new(size_t)
 	{
