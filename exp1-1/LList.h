@@ -1,7 +1,7 @@
 /*
 *
 *	数据结构第一次实验课
-*	双向链表
+*	双向链表（无序）
 *	10.12 张冠杰
 *
 */
@@ -25,13 +25,13 @@ protected:
 	{
 		header = new Link<T>;
 		tailer = new Link<T>;
-		header->next = tailer; header->prev = nullptr;
+		header->next = tailer; header->prev = nullptr; //初始化头尾哨兵
 		tailer->prev = header; tailer->next = nullptr;
 		_size = 0;
 	}
 	
 public:
-	LList(int size = 10)
+	LList(int size = 20181012)	//不限规模
 	{
 		init();
 	}
@@ -47,7 +47,7 @@ public:
 	void clear()
 	{
 		curr = header->next;
-		while (curr != tailer)
+		while (curr != tailer)	//删除所有节点
 		{
 			curr = curr->next;
 			delete curr->prev;
@@ -84,7 +84,7 @@ public:
 	{
 		Link<T>* temp = curr;
 		curr = curr->next;
-		curr->prev = temp->next = new Link<T>(it, temp, curr);
+		curr->prev = temp->next = new Link<T>(it, temp, curr);	//新建节点
 		curr = curr->prev;
 		_size++;
 	}
@@ -94,7 +94,7 @@ public:
 	{
 		Link<T>* temp = curr;
 		curr = curr->prev;
-		curr->next = temp->prev = new Link<T>(it, curr, temp);
+		curr->next = temp->prev = new Link<T>(it, curr, temp);	//新建节点
 		curr = curr->next;
 		_size++;
 	}
@@ -103,7 +103,7 @@ public:
 	LList<T>& append(const T& it)
 	{
 		Link<T>* temp = tailer->prev;
-		temp->next = tailer->prev = new Link<T>(it, temp, tailer);
+		temp->next = tailer->prev = new Link<T>(it, temp, tailer);	//新建节点
 		_size++;
 		return *this;
 	}
@@ -112,7 +112,7 @@ public:
 	void insertAsFirst(const T& it)
 	{
 		Link<T>* temp = header->next;
-		temp->prev = header->next = new Link<T>(it, header, temp);
+		temp->prev = header->next = new Link<T>(it, header, temp);	//新建节点
 		_size++;
 	}
 
@@ -175,6 +175,7 @@ public:
 		return curr->element;
 	}
 
+	//traverse by using 函数指针
 	void traverse(void(*visit)(T&))
 	{
 		Link<T>* t = header->next;
@@ -185,11 +186,13 @@ public:
 		}
 	}
 
+	//是否为空
 	bool isempty() const
 	{
 		return !_size;
 	}
 
+	//顺序查找，失败则返回NULL
 	int search(T& it) const
 	{
 		Link<T>* t = header->next;
@@ -201,7 +204,7 @@ public:
 			cnt++;
 			t = t->next;
 		}
-		return -1;
+		return NULL;
 	}
 };
 

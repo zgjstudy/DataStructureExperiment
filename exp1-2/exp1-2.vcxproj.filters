@@ -15,25 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AList.h">
+    <ClInclude Include="Dictionary.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="List.h">
+    <ClInclude Include="学生成绩管理.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="dLinkWithFreeList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="runtime.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="exp1-1.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
