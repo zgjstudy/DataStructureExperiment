@@ -42,6 +42,7 @@ LList<Gread> StudentGreadManager::remove(const Student & student)
 			return temp;
 		}
 	}
+	return NULL;
 }
 
 double StudentGreadManager::remove(const Student & student, const string s)
@@ -53,6 +54,7 @@ double StudentGreadManager::remove(const Student & student, const string s)
 			return _data->getValue_().remove(s);
 		}
 	}
+	return -1;
 }
 
 LList<Gread> StudentGreadManager::search(const Student & student) const
@@ -64,6 +66,7 @@ LList<Gread> StudentGreadManager::search(const Student & student) const
 			return _data->getValue_().getGread();
 		}
 	}
+	return NULL;
 }
 
 double StudentGreadManager::search(const Student & student, const string s) const
@@ -75,6 +78,7 @@ double StudentGreadManager::search(const Student & student, const string s) cons
 			return _data->getValue_().search(s);
 		}
 	}
+	return -1;
 }
 
 inline int StudentGreadManager::size() const

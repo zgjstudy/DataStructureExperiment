@@ -1,7 +1,7 @@
 /*
 *
 *	数据结构第一次实验课
-*	基于双向链表和二维字典的学生成绩管理类
+*	基于双向链表和字典的学生成绩管理类
 *	10.18 张冠杰
 *
 */
@@ -31,19 +31,31 @@ struct Student
 typedef std::pair<string, double> Gread;
 
 //一个学生和他的成绩单
-class StudentGread
+struct StudentGread
 {
-private:
 	Student _student;
 	LList<Gread>* _greadList;
 
-	bool operator== (StudentGread) {}
+	//默认构造函数
+	StudentGread() {}
 
-public:
+	//构造函数
 	StudentGread(const Student& s)
 	{
 		_student = s;
 		_greadList = new LList<Gread>;
+	}
+
+	StudentGread(const Student& s, LList<Gread>& g)
+	{
+		_student = s;
+		_greadList = new LList<Gread>(g);
+	}
+
+	StudentGread(const StudentGread& sg)
+	{
+		_student = sg._student;
+		_greadList = new LList<Gread>(*(sg._greadList));
 	}
 
 	~StudentGread()
@@ -86,6 +98,7 @@ public:
 				return score;
 			}
 		}
+		return -1;
 	}
 
 	//判断是否为同一个人
@@ -98,6 +111,9 @@ public:
 	{
 		return *_greadList;
 	}
+
+	//使用LList必须要声明==
+	bool operator== (StudentGread) { return 0; }
 };
 
 class StudentGreadManager : Dictionary<Student, LList<Gread> >
@@ -132,7 +148,5 @@ public:
 
 	//返回学生数
 	int size() const;
-
-	void operator==(StudentGreadManager) {};
 };
 

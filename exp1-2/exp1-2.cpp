@@ -6,12 +6,14 @@
 *
 */
 
-#include <iostream>
-#include "学生成绩管理.h"
+#include "user interface.h"
 
 using namespace std;
 
 int main()
 {
+	UserInterface UIF;
+	UIF.run();
 
+	return 0;
 }
