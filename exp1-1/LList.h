@@ -43,6 +43,30 @@ public:
 		delete tailer;
 	}
 
+	//Copy constructor(deep)
+	LList(const LList<T>& l)
+	{
+		header = new Link<T>;
+		tailer = new Link<T>;
+		header->next = tailer; header->prev = nullptr; //初始化头尾哨兵
+		tailer->prev = header; tailer->next = nullptr;
+		_size = 0;
+
+		for (Link<T>* p = l.header->next; p != l.tailer; p = p->next)	//依次插入所有元素
+		{
+			insert(p->element);
+		}
+	}
+
+	void operator= (const LList<T>& l)
+	{
+		clear();
+		for (Link<T>* p = l.header->next; p != l.tailer; p = p->next)	//依次插入所有元素
+		{
+			insert(p->element);
+		}
+	}
+
 	//clear
 	void clear()
 	{
@@ -175,6 +199,12 @@ public:
 		return curr->element;
 	}
 
+	//return current element without const
+	T& getValue_()
+	{
+		return curr->element;
+	}
+
 	//traverse by using 函数指针
 	void traverse(void(*visit)(T&))
 	{
@@ -192,7 +222,7 @@ public:
 		return !_size;
 	}
 
-	//顺序查找，失败则返回NULL
+	//顺序查找，失败则返回-1
 	int search(T& it) const
 	{
 		Link<T>* t = header->next;
@@ -204,7 +234,6 @@ public:
 			cnt++;
 			t = t->next;
 		}
-		return NULL;
+		return -1;
 	}
 };
-

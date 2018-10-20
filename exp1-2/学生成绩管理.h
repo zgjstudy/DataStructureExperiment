@@ -15,59 +15,124 @@
 
 using std::string;
 
-struct Student	//学生基本信息
+//学生基本信息
+struct Student
 {
 	string ID;
 	string name;
+
+	bool operator== (const Student& r) const
+	{
+		return ID == r.ID && name == r.name;
+	}
 };
 
-struct Gread	//单科成绩信息
-{
-	string courseTitle;
-	double score;
-};
+//单科成绩信息
+typedef std::pair<string, double> Gread;
 
-struct StudentGread	//学生信息
-{
-	Student student;	//基本信息
-	LList<Gread> gread;	//成绩单
-};
-
-class StudentGreadManager : Dictionary2D<Student, Gread, StudentGread>
+//一个学生和他的成绩单
+class StudentGread
 {
 private:
-	LList<StudentGread>* _greadList;
+	Student _student;
+	LList<Gread>* _greadList;
 
-	void insert(const Student& k, const StudentGread& e) {}	//隐藏不需要的接口
-
-	void insert(const Gread& k, const StudentGread& e) {}	//隐藏不需要的接口
+	bool operator== (StudentGread) {}
 
 public:
-	StudentGreadManager()	//构造函数
+	StudentGread(const Student& s)
 	{
-		_greadList = new LList<StudentGread>;
+		_student = s;
+		_greadList = new LList<Gread>;
 	}
 
-	~StudentGreadManager()	//析构函数
+	~StudentGread()
 	{
 		delete _greadList;
 	}
 
-	void clear()	//清空学生信息
+	//在成绩单中按学科名顺序检索，成功则返回成绩，失败返回-1
+	double search(string s) const
+	{
+		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
+		{
+			if (_greadList->getValue().first == s)
+				return _greadList->getValue().second;
+		}
+		return -1;
+	}
+
+	//添加成绩信息
+	void insert(const Gread& g)
+	{
+		_greadList->append(g);
+	}
+
+	//移除成绩信息
+	void clear()
 	{
 		_greadList->clear();
 	}
 
-	void insert(const StudentGread& e)	//插入学生信息
+	//移除单科成绩
+	double remove(const string s)
 	{
-		_greadList->append(e);
+		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
+		{
+			if (_greadList->getValue().first == s)
+			{
+				double score = _greadList->getValue().second;
+				_greadList->remove();
+				return score;
+			}
+		}
 	}
 
-	void insert(const Student& e)	//按照学生基本信息插入
+	//判断是否为同一个人
+	bool isSameStudent(const Student& s) const
 	{
-		StudentGread sg;
-		sg.student = e;
-		_greadList->append(sg);
+		return s == _student;
 	}
 
+	LList<Gread> getGread()
+	{
+		return *_greadList;
+	}
 };
+
+class StudentGreadManager : Dictionary<Student, LList<Gread> >
+{
+private:
+	LList<StudentGread>* _data;
+
+public:
+	StudentGreadManager();	//构造函数
+	~StudentGreadManager();	//析构函数
+
+	//清空学生信息
+	void clear();
+
+	//添加学生信息
+	void insert(const Student&, LList<Gread>&);
+
+	//添加学生信息
+	void insert(const Student&);
+
+	//移除学生全部成绩
+	LList<Gread> remove(const Student&);
+
+	//移除学生单科成绩
+	double remove(const Student&, const string);
+
+	//查找成绩
+	LList<Gread> search(const Student&) const;
+
+	//查找单科成绩
+	double search(const Student&, const string) const;
+
+	//返回学生数
+	int size() const;
+
+	void operator==(StudentGreadManager) {};
+};
+

@@ -21,5 +21,19 @@
     <ClInclude Include="学生成绩管理.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GreadReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="user interface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="学生成绩管理.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="exp1-2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

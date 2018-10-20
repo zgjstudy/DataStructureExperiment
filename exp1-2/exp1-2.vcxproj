@@ -116,7 +116,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="GreadReader.h" />
+    <ClInclude Include="user interface.h" />
     <ClInclude Include="学生成绩管理.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="exp1-2.cpp" />
+    <ClCompile Include="学生成绩管理.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
