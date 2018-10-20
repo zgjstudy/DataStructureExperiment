@@ -1,8 +1,8 @@
 /*
 *
-*	Êı¾İ½á¹¹µÚÒ»´ÎÊµÑé¿Î
-*	»ùÓÚË«ÏòÁ´±íºÍ¶şÎ¬×ÖµäµÄÑ§Éú³É¼¨¹ÜÀíÀà
-*	10.18 ÕÅ¹Ú½Ü
+*	æ•°æ®ç»“æ„ç¬¬ä¸€æ¬¡å®éªŒè¯¾
+*	åŸºäºåŒå‘é“¾è¡¨å’Œå­—å…¸çš„å­¦ç”Ÿæˆç»©ç®¡ç†ç±»
+*	10.18 å¼ å† æ°
 *
 */
 
@@ -15,7 +15,7 @@
 
 using std::string;
 
-//Ñ§Éú»ù±¾ĞÅÏ¢
+//å­¦ç”ŸåŸºæœ¬ä¿¡æ¯
 struct Student
 {
 	string ID;
@@ -27,10 +27,10 @@ struct Student
 	}
 };
 
-//µ¥¿Æ³É¼¨ĞÅÏ¢
+//å•ç§‘æˆç»©ä¿¡æ¯
 typedef std::pair<string, double> Gread;
 
-//Ò»¸öÑ§ÉúºÍËûµÄ³É¼¨µ¥
+//ä¸€ä¸ªå­¦ç”Ÿå’Œä»–çš„æˆç»©å•
 class StudentGread
 {
 private:
@@ -51,7 +51,7 @@ public:
 		delete _greadList;
 	}
 
-	//ÔÚ³É¼¨µ¥ÖĞ°´Ñ§¿ÆÃûË³Ğò¼ìË÷£¬³É¹¦Ôò·µ»Ø³É¼¨£¬Ê§°Ü·µ»Ø-1
+	//åœ¨æˆç»©å•ä¸­æŒ‰å­¦ç§‘åé¡ºåºæ£€ç´¢ï¼ŒæˆåŠŸåˆ™è¿”å›æˆç»©ï¼Œå¤±è´¥è¿”å›-1
 	double search(string s) const
 	{
 		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
@@ -62,19 +62,19 @@ public:
 		return -1;
 	}
 
-	//Ìí¼Ó³É¼¨ĞÅÏ¢
+	//æ·»åŠ æˆç»©ä¿¡æ¯
 	void insert(const Gread& g)
 	{
 		_greadList->append(g);
 	}
 
-	//ÒÆ³ı³É¼¨ĞÅÏ¢
+	//ç§»é™¤æˆç»©ä¿¡æ¯
 	void clear()
 	{
 		_greadList->clear();
 	}
 
-	//ÒÆ³ıµ¥¿Æ³É¼¨
+	//ç§»é™¤å•ç§‘æˆç»©
 	double remove(const string s)
 	{
 		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
@@ -88,7 +88,7 @@ public:
 		}
 	}
 
-	//ÅĞ¶ÏÊÇ·ñÎªÍ¬Ò»¸öÈË
+	//åˆ¤æ–­æ˜¯å¦ä¸ºåŒä¸€ä¸ªäºº
 	bool isSameStudent(const Student& s) const
 	{
 		return s == _student;
@@ -106,31 +106,31 @@ private:
 	LList<StudentGread>* _data;
 
 public:
-	StudentGreadManager();	//¹¹Ôìº¯Êı
-	~StudentGreadManager();	//Îö¹¹º¯Êı
+	StudentGreadManager();	//æ„é€ å‡½æ•°
+	~StudentGreadManager();	//ææ„å‡½æ•°
 
-	//Çå¿ÕÑ§ÉúĞÅÏ¢
+	//æ¸…ç©ºå­¦ç”Ÿä¿¡æ¯
 	void clear();
 
-	//Ìí¼ÓÑ§ÉúĞÅÏ¢
+	//æ·»åŠ å­¦ç”Ÿä¿¡æ¯
 	void insert(const Student&, LList<Gread>&);
 
-	//Ìí¼ÓÑ§ÉúĞÅÏ¢
+	//æ·»åŠ å­¦ç”Ÿä¿¡æ¯
 	void insert(const Student&);
 
-	//ÒÆ³ıÑ§ÉúÈ«²¿³É¼¨
+	//ç§»é™¤å­¦ç”Ÿå…¨éƒ¨æˆç»©
 	LList<Gread> remove(const Student&);
 
-	//ÒÆ³ıÑ§Éúµ¥¿Æ³É¼¨
+	//ç§»é™¤å­¦ç”Ÿå•ç§‘æˆç»©
 	double remove(const Student&, const string);
 
-	//²éÕÒ³É¼¨
+	//æŸ¥æ‰¾æˆç»©
 	LList<Gread> search(const Student&) const;
 
-	//²éÕÒµ¥¿Æ³É¼¨
+	//æŸ¥æ‰¾å•ç§‘æˆç»©
 	double search(const Student&, const string) const;
 
-	//·µ»ØÑ§ÉúÊı
+	//è¿”å›å­¦ç”Ÿæ•°
 	int size() const;
 
 	void operator==(StudentGreadManager) {};
