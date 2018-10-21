@@ -36,7 +36,7 @@ public:
 	// Return: A record matching "k" (NULL if none exists).
 	// If multiple records match, return an arbitrary one.
 	// k: The key of the record to find
-	virtual E search(const key1& k) const = 0;
+	virtual E search(const key1& k) = 0;
 
 	// Return the number of records in the dictionary.
 	virtual int size() const = 0;

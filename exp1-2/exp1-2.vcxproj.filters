@@ -29,9 +29,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="学生成绩管理.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="exp1-2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

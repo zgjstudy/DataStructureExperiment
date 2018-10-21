@@ -59,7 +59,10 @@ struct StudentGread
 	StudentGread(const Student& s, LList<Gread>& g)
 	{
 		_student = s;
-		_greadList = g;
+		for (g.moveToStart(); g.currPos() <= g.length(); g.pred())
+		{
+			_greadList.append(g.getValue());
+		}
 	}
 
 	StudentGread(const StudentGread& sg)
@@ -75,7 +78,7 @@ struct StudentGread
 	{
 		if (_greadList.isempty())
 			return -1;
-		for (_greadList.moveToStart(); _greadList.currPos() < _greadList.length(); _greadList.succ())
+		for (_greadList.moveToStart(); _greadList.currPos() <= _greadList.length(); _greadList.pred())
 		{
 			if (_greadList.getValue().first == s)
 				return _greadList.getValue().second;
@@ -99,7 +102,7 @@ struct StudentGread
 	//移除单科成绩
 	double remove(const string s)
 	{
-		for (_greadList.moveToStart(); _greadList.currPos() < _greadList.length(); _greadList.succ())
+		for (_greadList.moveToStart(); _greadList.currPos() <= _greadList.length(); _greadList.pred())
 		{
 			if (_greadList.getValue().first == s)
 			{
@@ -126,38 +129,111 @@ struct StudentGread
 
 class StudentGreadManager : Dictionary<Student, LList<Gread> >
 {
-private:
-	LList<StudentGread>* _data;
+public:
+	LList<StudentGread> _data;
 
 public:
-	StudentGreadManager();	//构造函数
-	~StudentGreadManager();	//析构函数
+	StudentGreadManager() {}
+	~StudentGreadManager() {}
 
 	//清空学生信息
-	void clear();
+	void clear()
+	{
+		_data.clear();
+	}
 
 	//添加学生信息
-	void insert(const Student&, LList<Gread>&);
+	void insert(const StudentGread& sg)
+	{
+		_data.append(sg);
+	}
 
 	//添加学生信息
-	void insert(const Student&);
+	void insert(const Student& student, LList<Gread>& l)
+	{
+		StudentGread sg(student, l);
+		insert(sg);
+	}
 
 	//添加学生信息
-	void insert(const StudentGread&);
+	void insert(const Student& s)
+	{
+		StudentGread sg(s);
+		insert(sg);
+	}
+
+	//添加学生成绩
+	void addGread(const Student& student, const Gread& g)
+	{
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			if (_data.getValue().isSameStudent(student))
+			{
+				_data.getValue_().insert(g);
+			}
+		}
+	}
 
 	//移除学生全部成绩
-	LList<Gread> remove(const Student&);
+	LList<Gread> remove(const Student& student)
+	{
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			if (_data.getValue().isSameStudent(student))
+			{
+				LList<Gread> temp = _data.getValue_()._greadList;
+				_data.getValue_().clear();
+				return temp;
+			}
+		}
+		return NULL;
+	}
 
 	//移除学生单科成绩
-	double remove(const Student&, const string);
+	double remove(const Student& student, const string s)
+	{
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			if (_data.getValue().isSameStudent(student))
+			{
+				return _data.getValue_().remove(s);
+			}
+		}
+		return -1;
+	}
 
 	//查找成绩
-	LList<Gread> search(const Student&) const;
+	LList<Gread> search(const Student& student)
+	{
+		if (_data.isempty())
+			return NULL;
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			if (_data.getValue().isSameStudent(student))
+			{
+				return _data.getValue_()._greadList;
+			}
+		}
+		return NULL;
+	}
 
 	//查找单科成绩
-	double search(const Student&, const string) const;
+	double search(const Student& student, const string s)
+	{
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			if (_data.getValue().isSameStudent(student))
+			{
+				return _data.getValue_().search(s);
+			}
+		}
+		return -1;
+	}
 
 	//返回学生数
-	int size() const;
+	int size() const
+	{
+		return _data.length();
+	}
 };
 

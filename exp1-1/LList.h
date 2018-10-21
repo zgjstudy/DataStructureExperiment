@@ -27,6 +27,7 @@ protected:
 		tailer = new Link<T>;
 		header->next = tailer; header->prev = nullptr; //初始化头尾哨兵
 		tailer->prev = header; tailer->next = nullptr;
+		curr = header;
 		_size = 0;
 	}
 	
@@ -59,7 +60,7 @@ public:
 		clear();
 		for (Link<T>* p = l.header->next; p != l.tailer; p = p->next)	//依次插入所有元素
 		{
-			insert(p->element);
+			append(p->element);
 		}
 	}
 
@@ -104,6 +105,8 @@ public:
 	//insert as successor
 	void insert(const T& it)
 	{
+		if (curr == tailer)
+			return;
 		Link<T>* temp = curr;
 		curr = curr->next;
 		curr->prev = temp->next = new Link<T>(it, temp, curr);	//新建节点
@@ -114,6 +117,8 @@ public:
 	//insert as predecessor
 	void insertAsPred(const T& it)
 	{
+		if (curr == header)
+			return;
 		Link<T>* temp = curr;
 		curr = curr->prev;
 		curr->next = temp->prev = new Link<T>(it, curr, temp);	//新建节点
