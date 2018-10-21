@@ -26,7 +26,7 @@ struct Student
 	Student(string id, string n)
 		:ID(id), name(n) {}
 
-	friend std::ostream& operator<< (std::ostream& os, Student& s)
+	friend std::ostream& operator<< (std::ostream& os,const Student& s)
 	{
 		os << s.ID << " " << s.name << " ";
 		return os;
@@ -40,6 +40,15 @@ struct Student
 
 //单科成绩信息
 typedef std::pair<string, double> Gread;
+
+//降序排列用到的函数对象
+struct Descending
+{
+	bool operator() (const Gread& r, const Gread& l)
+	{
+		return r.second > l.second;
+	}
+}descending;
 
 //一个学生和他的成绩单
 struct StudentGread
@@ -129,7 +138,7 @@ struct StudentGread
 
 class StudentGreadManager : Dictionary<Student, LList<Gread> >
 {
-public:
+private:
 	LList<StudentGread> _data;
 
 public:
@@ -163,15 +172,19 @@ public:
 	}
 
 	//添加学生成绩
-	void addGread(const Student& student, const Gread& g)
+	bool addGread(const Student& student, const Gread& g)
 	{
+		bool ins = 0;
 		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
 		{
 			if (_data.getValue().isSameStudent(student))
 			{
 				_data.getValue_().insert(g);
+				ins = 1;
+				break;
 			}
 		}
+		return ins;
 	}
 
 	//移除学生全部成绩
@@ -234,6 +247,14 @@ public:
 	int size() const
 	{
 		return _data.length();
+	}
+
+	void printAllStudentInfo()
+	{
+		for (_data.moveToStart(); _data.currPos() <= _data.length(); _data.pred())
+		{
+			std::cout << _data.getValue()._student << std::endl;
+		}
 	}
 };
 

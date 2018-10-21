@@ -5,7 +5,7 @@
 *	10.20 张冠杰
 *
 */
-#define DEBUG 1
+#define DEBUG 0
 #include "user interface.h"
 
 using namespace std;
@@ -89,17 +89,17 @@ void test()
 	cout << sgm.search(student3, "电路与电子技术") << endl;
 	cout << sgm.search(student3, "大学物理") << endl;
 	cout << sgm.search(student3, "数学分析") << endl << endl;
-
+	sgm.printAllStudentInfo();
 	cout << sgm.size() << endl;
 	sgm.clear();
-	cout << sgm.size() << endl;
+	cout << sgm.size() << endl << endl;
 }
 #endif
 
 int main()
 {
-
-	
+	UserInterface UI;
+	UI.run();
 
 #if DEBUG
 	test();

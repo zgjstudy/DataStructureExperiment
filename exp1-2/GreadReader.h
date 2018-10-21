@@ -27,19 +27,6 @@ private:
 		getline(_reader, s);	//读取第一行
 	}
 
-	//用于替换所有字符的辅助函数
-	string& replace_all(string& str, const string& old_value, const string& new_value)
-	{
-		while (true)
-		{
-			string::size_type pos(0);
-			if ((pos = str.find(old_value)) != string::npos)
-				str.replace(pos, old_value.length(), new_value);
-			else break;
-		}
-		return str;
-	}
-
 public:
 	//构造函数
 	GreadReader(string filename)
@@ -67,15 +54,13 @@ public:
 
 		while (!_reader.eof())	//判断文件尾
 		{
-			getline(_reader, temp);		//将数据存到缓冲区
-			replace_all(temp, ",", " ");//将,替换为 方便后续操作
-
 			string id, name;
-
 			_buffer << temp;			//读取id和名字
 			_buffer >> id;
 			_buffer << temp;
 			_buffer >> name;
+
+			std::cout << id << " " << name << std::endl;
 
 			string first;
 			double second;
