@@ -42,7 +42,7 @@ LList<Gread> StudentGreadManager::remove(const Student & student)
 	{
 		if (_data->getValue().isSameStudent(student))
 		{
-			LList<Gread> temp = _data->getValue_().getGread();
+			LList<Gread> temp = _data->getValue_()._greadList;
 			_data->getValue_().clear();
 			return temp;
 		}
@@ -64,11 +64,13 @@ double StudentGreadManager::remove(const Student & student, const string s)
 
 LList<Gread> StudentGreadManager::search(const Student & student) const
 {
+	if (_data->isempty())
+		return NULL;
 	for (_data->moveToStart(); _data->currPos() < _data->length(); _data->succ())
 	{
 		if (_data->getValue().isSameStudent(student))
 		{
-			return _data->getValue_().getGread();
+			return _data->getValue_()._greadList;
 		}
 	}
 	return NULL;

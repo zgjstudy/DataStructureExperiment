@@ -45,7 +45,7 @@ typedef std::pair<string, double> Gread;
 struct StudentGread
 {
 	Student _student;
-	LList<Gread>* _greadList;
+	LList<Gread> _greadList;
 
 	//默认构造函数
 	StudentGread() {}
@@ -54,58 +54,57 @@ struct StudentGread
 	StudentGread(const Student& s)
 	{
 		_student = s;
-		_greadList = new LList<Gread>;
 	}
 
 	StudentGread(const Student& s, LList<Gread>& g)
 	{
 		_student = s;
-		_greadList = new LList<Gread>(g);
+		_greadList = g;
 	}
 
 	StudentGread(const StudentGread& sg)
 	{
 		_student = sg._student;
-		_greadList = new LList<Gread>(*(sg._greadList));
+		_greadList = sg._greadList;
 	}
 
-	~StudentGread()
-	{
-		delete _greadList;
-	}
+	~StudentGread() {}
 
 	//在成绩单中按学科名顺序检索，成功则返回成绩，失败返回-1
-	double search(string s) const
+	double search(string s)
 	{
-		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
+		if (_greadList.isempty())
+			return -1;
+		for (_greadList.moveToStart(); _greadList.currPos() < _greadList.length(); _greadList.succ())
 		{
-			if (_greadList->getValue().first == s)
-				return _greadList->getValue().second;
+			if (_greadList.getValue().first == s)
+				return _greadList.getValue().second;
 		}
 		return -1;
 	}
 
 	//添加成绩信息
-	void insert(const Gread& g)
+	StudentGread& insert(const Gread& g)
 	{
-		_greadList->append(g);
+		_greadList.append(g);
+		return *this;
 	}
 
 	//移除成绩信息
 	void clear()
 	{
-		_greadList->clear();
+		_greadList.clear();
 	}
 
 	//移除单科成绩
 	double remove(const string s)
 	{
-		for (_greadList->moveToStart(); _greadList->currPos() < _greadList->length(); _greadList->succ())
+		for (_greadList.moveToStart(); _greadList.currPos() < _greadList.length(); _greadList.succ())
 		{
-			if (_greadList->getValue().first == s)
+			if (_greadList.getValue().first == s)
 			{
-				double score = _greadList->getValue().second;
-				_greadList->remove();
+				double score = _greadList.getValue().second;
+				_greadList.remove();
 				return score;
 			}
 		}
@@ -118,13 +117,11 @@ struct StudentGread
 		return s == _student;
 	}
 
-	LList<Gread> getGread()
-	{
-		return *_greadList;
-	}
-
 	//使用LList必须要声明==
-	bool operator== (StudentGread) { return 0; }
+	bool operator== (StudentGread& sg)
+	{
+		return isSameStudent(sg._student);
+	}
 };
 
 class StudentGreadManager : Dictionary<Student, LList<Gread> >

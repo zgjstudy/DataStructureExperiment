@@ -46,11 +46,7 @@ public:
 	//Copy constructor(deep)
 	LList(const LList<T>& l)
 	{
-		header = new Link<T>;
-		tailer = new Link<T>;
-		header->next = tailer; header->prev = nullptr; //初始化头尾哨兵
-		tailer->prev = header; tailer->next = nullptr;
-		_size = 0;
+		init();
 
 		for (Link<T>* p = l.header->next; p != l.tailer; p = p->next)	//依次插入所有元素
 		{
@@ -76,6 +72,8 @@ public:
 			curr = curr->next;
 			delete curr->prev;
 		}
+		header->next = tailer;	//初始化头尾哨兵
+		tailer->prev = header;
 		_size = 0;
 	}
 
