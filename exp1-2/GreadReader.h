@@ -58,35 +58,37 @@ public:
 		_reader.close();
 	}
 
-	//读取一个学生的数据信息
-	StudentGread readStudent()
+	//读取全部数据
+	void readAll(StudentGreadManager* sgm)
 	{
 		Student s;
 		LList<Gread> g;
 		string temp;				//用于辅助的string
-		getline(_reader, temp);		//将数据存到缓冲区
 
-		replace_all(temp, ",", " ");//将,替换为 方便后续操作
-		
-		string id, name;
-		
-		if(_buffer >> temp)			//读取id和名字
-			_buffer << id;
-		if(_buffer >> temp)
-			_buffer << name;
-
-		string first;
-		double second;
-		while (_buffer >> temp)		//读取全部成绩信息
+		while (!_reader.eof())	//判断文件尾
 		{
-			_buffer << temp;
-			_buffer >> first;
-			_buffer << temp;
-			_buffer >> second;
-			g.append(std::make_pair(first, second));
-		}
+			getline(_reader, temp);		//将数据存到缓冲区
+			replace_all(temp, ",", " ");//将,替换为 方便后续操作
 
-		return StudentGread(s, g);
+			string id, name;
+
+			_buffer << temp;			//读取id和名字
+			_buffer >> id;
+			_buffer << temp;
+			_buffer >> name;
+
+			string first;
+			double second;
+			while (_buffer << temp)		//读取全部成绩信息
+			{
+				_buffer >> first;
+				_buffer << temp;
+				_buffer >> second;
+				g.append(std::make_pair(first, second));
+			}
+
+			sgm->insert(s, g);
+		}
 	}
 
 };

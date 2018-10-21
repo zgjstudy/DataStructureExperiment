@@ -5,15 +5,19 @@
 *	10.20 уе╧з╫э
 *
 */
-
+#define DEBUG 1
 #include "user interface.h"
 
 using namespace std;
 
 int main()
 {
-	UserInterface UIF;
-	UIF.run();
+	Student s("0032", "ZGJ");
+	cout << s;
+
+#if DEBUG
+	system("pause");
+#endif
 
 	return 0;
 }

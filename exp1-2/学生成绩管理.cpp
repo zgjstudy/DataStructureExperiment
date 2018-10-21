@@ -31,6 +31,11 @@ void StudentGreadManager::insert(const Student & s)
 	_data->append(s);
 }
 
+void StudentGreadManager::insert(const StudentGread & sg)
+{
+	_data->append(sg);
+}
+
 LList<Gread> StudentGreadManager::remove(const Student & student)
 {
 	for (_data->moveToStart(); _data->currPos() < _data->length(); _data->succ())

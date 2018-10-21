@@ -17,7 +17,7 @@ using std::endl;
 
 class UserInterface
 {
-private:
+public:
 	StudentGreadManager* _manager;
 	GreadReader* _reader;
 	HWND consoleHwnd;
@@ -26,11 +26,12 @@ private:
 	int width = 1024;
 	int height = 720;
 
-	enum State
+	enum State	//状态编码
 	{
 		START = 0,
 		INPUT_BY_USER,
 		LOAD_FORM_FILE,
+		OPERATION_INTERFACE,
 
 	} currentState;
 
@@ -100,12 +101,75 @@ private:
 	//用户输入信息界面
 	void userInputData()
 	{
-
+		cout << endl << "该功能尚未完善。" << endl << endl;
+		currentState = START;
 	}
 
 	//从文件读取界面
 	void loadDataFromFile()
 	{
+		cout << "请输入要读取的文件名： ";
+		string filename;
+		cin >> filename;
+		cout << "读取中。。。";
+		_reader = new GreadReader(filename);
+		_reader->readAll(_manager);
+		cout << "读取完毕。" << endl << endl;
+		currentState = OPERATION_INTERFACE;
+	}
+
+	//用户操作界面
+	void operationInterface()
+	{
+		string mode;
+		cout << endl << "您要干嘛？" << endl
+			<< "1.按照学生信息查找成绩" << endl
+			<< "2.按照学生信息和科目查找成绩" << endl
+			<< "3.添加学生信息" << endl
+			<< "4.添加学生课程成绩" << endl
+			<< "5.删除学生课程成绩" << endl
+			<< "6.输出所有同学的所有成绩" << endl
+			<< "h.返回开始菜单" << endl
+			<< "q.退出程序" << endl << endl;
+		cin >> mode;
+
+		switch (mode[0])
+		{
+		case '1':
+			break;
+		case '2':
+		{
+			Student stu;
+			string coursename;
+			cout << "请输入学生ID、姓名和课程名（示例：0032 ZGJ 电路与电子技术）：";
+			cin >> stu.ID >> stu.name >> coursename;
+
+			double score = _manager->search(stu, coursename);
+			if (score != -1)
+				cout << "该科目成绩为：" << score << endl;
+			else
+				cout << "未查询到该科目成绩" << endl;
+		}
+			break;
+		case '3':
+			break;
+		case '4':
+			break;
+		case '5':
+			break;
+		case 'h':
+			currentState = START;
+			break;
+		case 'q':
+			cout << endl << "真的要退出？(y for yes): ";
+			cin >> mode;
+			if (mode[0] == 'y')
+				exit(0);
+			break;
+		default:
+			cout << "输入有误！" << endl;
+			break;
+		}
 
 	}
 
@@ -130,6 +194,7 @@ public:
 			::MoveWindow(consoleHwnd, (scrWidth - width) / 2, (scrHeight - height) / 2,
 				width, height, true);
 
+			//有限状态机
 			switch (currentState)
 			{
 			case UserInterface::START:
@@ -140,6 +205,9 @@ public:
 				break;
 			case UserInterface::LOAD_FORM_FILE:
 				loadDataFromFile();
+				break;
+			case UserInterface::OPERATION_INTERFACE:
+				operationInterface();
 				break;
 			default:
 				break;

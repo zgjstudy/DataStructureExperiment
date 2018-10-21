@@ -12,6 +12,7 @@
 #include "../exp1-1/LList.h"
 #include <string>
 #include <cstring>
+#include <iostream>
 
 using std::string;
 
@@ -20,6 +21,16 @@ struct Student
 {
 	string ID;
 	string name;
+
+	Student() {}
+	Student(string id, string n)
+		:ID(id), name(n) {}
+
+	friend std::ostream& operator<< (std::ostream& os, Student& s)
+	{
+		os << s.ID << " " << s.name << " ";
+		return os;
+	}
 
 	bool operator== (const Student& r) const
 	{
@@ -133,6 +144,9 @@ public:
 
 	//添加学生信息
 	void insert(const Student&);
+
+	//添加学生信息
+	void insert(const StudentGread&);
 
 	//移除学生全部成绩
 	LList<Gread> remove(const Student&);
