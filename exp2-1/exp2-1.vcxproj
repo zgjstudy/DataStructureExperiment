@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClInclude Include="BST.h" />
     <ClInclude Include="BSTNode.h" />
+    <ClInclude Include="BSTplus.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="Node.h" />
   </ItemGroup>

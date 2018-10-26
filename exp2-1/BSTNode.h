@@ -19,17 +19,10 @@ private:
 
 public:
 	BSTNode()
-	{
-		_lc = _rc = nullptr;
-	}
+		:_rc(nullptr), _lc(nullptr) {}
 
 	BSTNode(KEY K, T e, BSTNode* l = nullptr, BSTNode* r = nullptr)
-	{
-		_key = K;
-		_value = e;
-		_lc = l;
-		_rc = r;
-	}
+		:_key(k), _value(e), _lc(l), _rc(r) {}
 
 	~BSTNode() {};
 
