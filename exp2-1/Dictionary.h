@@ -1,10 +1,11 @@
 /*
 *
-*	数据结构第一次实验课
-*	字典类
-*	10.18 张冠杰
+*	数据结构
+*	dictionary ADT类
+*	10.6
 *
 */
+
 
 #pragma once
 
@@ -12,8 +13,8 @@ template <typename key, typename E>
 class Dictionary
 {
 private:
-	void operator =(const Dictionary&) {}	//防止赋值
-	Dictionary(const Dictionary&) {}	//防止复制
+	void operator =(const Dictionary&) {}
+	Dictionary(const Dictionary&) {}
 
 public:
 	Dictionary() {}
@@ -24,7 +25,7 @@ public:
 	// Insert a record
 	// k: The key for the record being inserted.
 	// e: The record being inserted.
-	virtual void insert(const key& k, E& e) = 0;
+	virtual void insert(const key& k, const E& e) = 0;
 
 	// Remove and return a record.
 	// k: The key of the record to be removed.
@@ -33,10 +34,14 @@ public:
 	// with key "k" exists.
 	virtual E remove(const key& k) = 0;
 
+	// Remove and return an arbitrary record from dictionary.
+	// Return: The record removed, or NULL if none exists.
+	virtual E removeAny() = 0;
+
 	// Return: A record matching "k" (NULL if none exists).
 	// If multiple records match, return an arbitrary one.
 	// k: The key of the record to find
-	virtual E search(const key& k) = 0;
+	virtual E find(const key& k) const = 0;
 
 	// Return the number of records in the dictionary.
 	virtual int size() const = 0;
