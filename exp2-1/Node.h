@@ -20,6 +20,8 @@ public:
 template <typename T> class BinNode : public vBinNode<T>
 {
 public:
+	BinNode() {}
+
 	explicit BinNode(BinNode &) {}
 
 	virtual ~BinNode() {}

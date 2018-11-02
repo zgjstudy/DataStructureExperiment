@@ -61,5 +61,5 @@ protected:
 	void buildHeap();
 
 public:
-	heap(T* h, int )
+	heap(T* h, int ) {}
 };

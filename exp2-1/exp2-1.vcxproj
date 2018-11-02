@@ -102,7 +102,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -117,7 +117,6 @@
   <ItemGroup>
     <ClInclude Include="BST.h" />
     <ClInclude Include="BSTNode.h" />
-    <ClInclude Include="BSTplus.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="Node.h" />
   </ItemGroup>

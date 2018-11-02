@@ -12,17 +12,17 @@
 template <typename KEY, typename T> class BSTNode : public BinNode<T>
 {
 private:
-	KEY			_key;
-	T			_value;
-	BSTNode*	_lc;
-	BSTNode*	_rc;
+	KEY		_key;
+	T		_value;
+	BSTNode *_lc;
+	BSTNode *_rc;
 
 public:
 	BSTNode()
 		:_rc(nullptr), _lc(nullptr) {}
 
 	BSTNode(KEY K, T e, BSTNode* l = nullptr, BSTNode* r = nullptr)
-		:_key(k), _value(e), _lc(l), _rc(r) {}
+		:_key(K), _value(e), _lc(l), _rc(r) {}
 
 	~BSTNode() {};
 
@@ -39,7 +39,7 @@ public:
 
 	bool isLeaf()
 	{
-		return (_lc == nullptr) && (_rc = nullptr);
+		return (_lc == nullptr) && (_rc == nullptr);
 	}
 };
 

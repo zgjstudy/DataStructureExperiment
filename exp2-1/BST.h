@@ -7,6 +7,7 @@
 */
 
 #pragma once
+#include <iostream>
 #include "BSTNode.h"
 #include "Dictionary.h"
 
@@ -14,10 +15,18 @@ template <typename Key, typename T> class BST : public Dictionary<Key, T>
 {
 private:
 	typedef BSTNode<Key, T>* NodePtr;
-	NodePtr _root = nullptr;
-	int _nodeCount = 0;
+	NodePtr _root;
+	int _nodeCount;
 
-	T removeAny() { return T(); }
+	T removeAny() { return T(); }	//隐藏不需要的接口
+
+	//用于计数的辅助函数
+	int counthelp(NodePtr root)
+	{
+		if (root == nullptr)
+			return 0;
+		return 1 + counthelp(root->left()) + counthelp(root->right());
+	}
 
 protected:
 	//clear helper
@@ -65,7 +74,7 @@ protected:
 	//insert helper
 	NodePtr inserthelp(NodePtr root, const Key& k, const T& e)
 	{
-		if (root == nullptr)
+		if (root == NULL)
 			return new BSTNode<Key, T>(k, e, nullptr, nullptr);
 		if (k < root->key())
 			root->setLeft(inserthelp(root->left(), k, e));
@@ -108,43 +117,142 @@ protected:
 		return root;
 	}
 
+	//顺序输出辅助函数
+	void printhelp(BSTNode<Key, T>* root) const
+	{
+		if (root == NULL)		
+		{
+			std::cout << " / ";	//空节点输出/
+			return;
+		}
+		std::cout << " " << root->key() << " ";	//输出当前key
+		printhelp(root->left());	//输出左子树
+		printhelp(root->right());	//输出右子树
+	}
+
+	//先序遍历辅助函数
+	void preorderhelp(BSTNode<Key, T>* root, void(*visit)(Key&, T&))
+	{
+		if (root == nullptr) return;
+		visit(root->key(), root->element());				//根左右
+		preorderhelp(root->left(), visit);
+		preorderhelp(root->right(), visit);
+	}
+
+	//中序遍历辅助函数
+	void inorderhelp(BSTNode<Key, T>* root, void(*visit)(Key&, T&))
+	{
+		if (root == nullptr) return;
+		inorderhelp(root->left(), visit);			//左根右
+		visit(root->key(), root->element());
+		inorderhelp(root->right(), visit);
+	}
+
+	//后序遍历辅助函数
+	void postorderhelp(BSTNode<Key, T>* root, void(*visit)(Key&, T&))
+	{
+		if (root == nullptr) return;
+		postorderhelp(root->left(), visit);	//左右根
+		postorderhelp(root->right(), visit);
+		visit(root->key(), root->element());
+	}
+
+	//数叶子辅助函数
+	int leafCounthelp(BSTNode<Key, T>* root) const
+	{
+		if (root == nullptr)	//空树返回0
+			return 0;
+		if (root->isLeaf())		//叶子结点返回1
+			return 1;
+		else
+			return leafCounthelp(root->left()) + leafCounthelp(root->right());	//没啥好注释的
+	}
+
+	//遍历叶子结点辅助函数
+	void leafTraversinghelp(BSTNode<Key, T>* root, void(*visit)(Key&, T&))
+	{
+		if (root == nullptr)	//空树返回
+			return;
+		if (root->isLeaf())		//叶子结点执行visit
+			visit(root->key(), root->element());
+		leafTraversinghelp(root->left(), visit);	//遍历左子树
+		leafTraversinghelp(root->right(), visit);	//遍历右子树
+	}
+
 public:
 	BST() : _root(nullptr), _nodeCount(0) {};
 	~BST() { clear(); }
 
 	//清空
 	void clear()
-	{
-		clearhelp(_root);
-		_root = nullptr;
-		_nodeCount = 0;
-	}
+		{
+			clearhelp(_root);
+			_root = nullptr;
+			_nodeCount = 0;
+		}
 
 	//插入
 	virtual void insert(const Key& k, const T& e)
-	{
-		_root = inserthelp(_root, k, e);
-		_nodeCount++;
-	}
+		{
+			_root = inserthelp(_root, k, e);
+			_nodeCount++;
+		}
 
 	//删除
 	virtual T remove(const Key& k)
-	{
-		T temp = findhelp(_root, k);
-		if (temp != NULL)
 		{
-			_root = removehelp(_root, k);
-			_nodeCount--;
+			T temp = findhelp(_root, k);
+			if (temp != NULL)
+			{
+				_root = removehelp(_root, k);
+				_nodeCount--;
+			}
+			return temp;
 		}
-		return temp;
-	}
 
 	//查询
 	virtual T find(const Key& k) const
-	{
-		return findhelp(_root, k);
-	}
+		{
+			return findhelp(_root, k);
+		}
 
 	//返回节点数
 	int size() const { return _nodeCount; }
+
+	//顺序打印
+	void printSequently() const
+		{
+			printhelp(_root);
+		}
+
+	//后序遍历
+	void postorder(void(*visit)(Key&, T&))
+		{
+			postorderhelp(_root, visit);
+		}
+
+	//中序遍历
+	void inorder(void(*visit)(Key&, T&))
+		{
+			inorderhelp(_root, visit);
+		}
+
+	//前序遍历
+	void preorder(void(*visit)(Key&, T&))
+		{
+			preorderhelp(_root, visit);
+		}
+
+	//计算叶子节点的数量
+	int leafCount() const
+		{
+			return leafCounthelp(_root);
+		}
+
+	//遍历叶子节点
+	void leafTraversing(void(*visit)(Key&, T&))
+		{
+			leafTraversinghelp(_root, visit);
+		}
+
 };
