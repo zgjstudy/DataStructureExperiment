@@ -43,7 +43,15 @@ int main()
 	cout << "coding of c: " << hf.getCoding('c') << endl;
 	cout << "coding of d: " << hf.getCoding('d') << endl;
 	cout << "coding of e: " << hf.getCoding('e') << endl;
-	cout << "coding of f: " << hf.getCoding('f') << endl;
+	cout << "coding of f: " << hf.getCoding('f') << endl << endl;
+
+	string s = "aabddkkkkeeedeeecccdddeee";
+	string c;
+	for (int i = 0, n = s.length(); i < n; ++i)
+	{
+		c += hf.getCoding(s[i]);
+	}
+	cout << "coding of " << s << " : " << c << endl;
 
 	system("pause");
 

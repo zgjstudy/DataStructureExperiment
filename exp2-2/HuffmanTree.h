@@ -84,21 +84,22 @@ private:
 	std::pair<T, string>* _coding;	//储存编码表
 	int _count;
 	int _max = 100;
+	HuffNode<T>* _root;
 
 	//建立哈夫曼树
 	void buildHuff()
 	{
 		HuffNode<T> *temp1, *temp2;
-		IntlNode<T> *temp3 = NULL;
+		IntlNode<T> *_root = NULL;
 		while (_huffForest->size() > 1)
 		{
 			temp1 = _huffForest->remove();	//取出两颗树
 			temp2 = _huffForest->remove();
-			temp3 = new IntlNode<T>(temp1, temp2);	//合并
-			_huffForest->insert((HuffNode<T>*)temp3);	//放入堆中
+			_root = new IntlNode<T>(temp1, temp2);	//合并
+			_huffForest->insert((HuffNode<T>*)_root);	//放入堆中
 		}
 		_count = 0;
-		coding(temp3, string(""));	//导出编码表
+		coding(_root, string(""));	//导出编码表
 	}
 
 	//编码函数

@@ -69,6 +69,5 @@ int main()
 	cout << "tree2µÄ½á¹¹£º" << endl;
 	tree2.draw();
 
-
 	return 0;
 }
