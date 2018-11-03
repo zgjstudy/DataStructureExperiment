@@ -14,7 +14,7 @@ template <typename T, typename Comp> class heap
 private:
 	T* _heap;
 	int _maxSize;
-	int n;			//当前最大下标
+	int _size;			//当前最大下标
 
 protected:
 	// 父节点
@@ -27,13 +27,13 @@ protected:
 	inline int RChild(int i) { return (i + 1) << 1; }
 
 	// 最后一个内部节点
-	inline int lastInternal() { return parent(n - 1); }
+	inline int lastInternal() { return parent(_size - 1); }
 
 	// 是否在堆内
-	inline bool inHeap(int i) { return i >= 0 && i < n; }
+	inline bool inHeap(int i) { return i >= 0 && i < _size; }
 
 	// 是否为叶子节点
-	inline bool isLeaf(int i) { return i < n && i >= n / 2; }
+	inline bool isLeaf(int i) { return i < _size && i >= _size / 2; }
 
 	// 父节点是否存在
 	inline bool hasParent(int i) { return i > 0; }
@@ -83,7 +83,7 @@ protected:
 	// 批量建堆
 	void buildHeap()
 	{
-		for (int i = lastInternal(n); i >= 0; --i)
+		for (int i = lastInternal(); i >= 0; --i)
 		{
 			siftDown(i);
 		}
@@ -91,16 +91,16 @@ protected:
 
 public:
 	heap()
-		:n(0), _maxSize(100)
+		:_size(0), _maxSize(100)
 	{
 		_heap = new T[_maxSize];
 	}
 
 	heap(T* h, int size, int max = 100)
-		:n(size - 1), _maxSize(max)
+		:_size(size), _maxSize(max)
 	{
 		_heap = new T[_maxSize];
-		for (int i = 0; i <= n; ++i)
+		for (int i = 0; i < size; ++i)
 		{
 			_heap[i] = h[i];
 		}
@@ -114,10 +114,10 @@ public:
 
 	heap<T, Comp> & insert(T e)
 	{
-		if (n + 1 > _maxSize)
+		if (_size + 1 > _maxSize)
 			exit(-1);
-		_heap[++n] = e;
-		siftUp(n);		//上滤
+		_heap[_size++] = e;
+		siftUp(_size - 1);	//上滤
 
 		return *this;
 	}
@@ -125,9 +125,10 @@ public:
 	T remove()
 	{
 		T max = _heap[0];
-		_heap[0] = _heap[n--];
+		_heap[0] = _heap[--_size];
 		siftDown(0);
 		return max;
 	}
 
+	int size() { return _size; }
 };
