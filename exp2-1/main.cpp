@@ -11,6 +11,9 @@ void visit(int& a, int& b)
 
 int main()
 {
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+
 	int n1, n2;
 	BST<int, int> tree1, tree2;
 	cout << "请分别输入两棵树的节点数量：";
@@ -28,7 +31,8 @@ int main()
 		cin >> t;
 		tree2.insert(t, t);
 	}
-	cout << "tree1:";
+	
+	cout << endl<< endl << "tree1:";
 	tree1.printSequently();
 	cout << endl << "tree2:";
 	tree2.printSequently();
@@ -58,7 +62,13 @@ int main()
 	tree2.leafTraversing(visit);
 	cout << endl;
 
-	system("Pause");
+	cout << endl << "tree1的结构：" << endl;
+	tree1.draw();
+	cout << endl << endl;
+
+	cout << "tree2的结构：" << endl;
+	tree2.draw();
+
 
 	return 0;
 }

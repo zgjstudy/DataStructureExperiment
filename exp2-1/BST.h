@@ -8,8 +8,11 @@
 
 #pragma once
 #include <iostream>
+#include <iomanip>
 #include "BSTNode.h"
 #include "Dictionary.h"
+using std::cout;
+using std::endl;
 
 template <typename Key, typename T> class BST : public Dictionary<Key, T>
 {
@@ -26,6 +29,38 @@ private:
 		if (root == nullptr)
 			return 0;
 		return 1 + counthelp(root->left()) + counthelp(root->right());
+	}
+
+	//画树辅助函数
+	void drawhelp(NodePtr root, int depth, int* flag)
+	{
+		if (root == nullptr)	//空子树直接返回
+			return;
+
+		//按照中序遍历的反方向进行遍历
+		//先遍历到的节点会画在上面
+
+		flag[depth] = 1;	//对于右子树将flag设为1
+		drawhelp(root->right(), depth + 1, flag);	//遍历右子树
+		
+		for (int i = 0; i < depth; ++i)	//画空格和树枝
+		{
+			cout << "             ";	//按照节点的深度缩进
+			if (i < depth - 1 && flag[i] != flag[i + 1])	//如果该节点的深度为i的祖先是深度为i-1祖先的左子树且深度为i+1的祖先是深度为i祖先的右子树或者反过来
+			{
+				cout << "|";	//则画树枝
+			}
+			else
+				cout << " ";	//否则空格
+		}
+
+		cout << "|---|" << std::setw(4) << root->key() << "|";	//绘制节点
+		if (!(root->isLeaf()))	//如果不是叶子节点就画树枝
+			cout << "---|";
+		cout << endl;
+
+		flag[depth] = -1;	//对于左子树将flag设为1
+		drawhelp(root->left(), depth + 1, flag);	//遍历左子树
 	}
 
 protected:
@@ -255,4 +290,11 @@ public:
 			leafTraversinghelp(_root, visit);
 		}
 
+	//画树
+	void draw()
+	{
+		int* flag = new int[_nodeCount];	//用于确认是否画竖线
+		drawhelp(_root, 0, flag);			//画树
+		delete[]flag;
+	}
 };
