@@ -7,4 +7,5 @@
 */
 
 #pragma once
-
+#include "Heap.h"
+#include "../exp2-1/BST.h"
