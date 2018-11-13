@@ -3,11 +3,13 @@
 #include <cstdlib>
 #include <climits>
 #include <thread>
+#include <algorithm>
+#include <iomanip>
 #include "SortAlgorithm.h"
 #include "TIME.h"
 using namespace std;
 
-#define EOHOD 'H' //experience mode or homework mode or debug mode
+#define EOHOD 'E' //experience mode or homework mode or debug mode
 
 void loadRandNum(int* a, int num, int min = 0, int max = 10000000)
 {
@@ -34,8 +36,15 @@ void copyArray(T* a, T* b, int n)
 	}
 }
 
+void testhelp(Timestamp& timer)
+{
+
+}
+
 int main()
 {
+	cout << "Begin." << endl;
+
 	int *num1k = new int[1005];		//原始数组
 	int *tnum1k = new int[1005];	//待排序数组
 	int *ttnum1k = new int[1005];	//备用空间
@@ -54,34 +63,70 @@ int main()
 	int *num1m = new int[1000005];
 	int *tnum1m = new int[1000005];
 	int *ttnum1m = new int[1000005];
-	do
+
+	do	//读取随机数
 	{
+		cout << "Loading rand numbers...";
 		thread t1([num100, tnum100] {
-			loadRandNum(num100, 100, 0, 1000);
+			loadRandNum(num100, 100, 0, 10000);
 			copyArray(num100, tnum100, 100);
 		});
 		t1.detach();
 		thread t2([num1k, tnum1k] {
-			loadRandNum(num1k, 1000, 0, 10000);
+			loadRandNum(num1k, 1000, 0, 100000);
 			copyArray(num1k, tnum1k, 1000);
 		});
 		t2.detach();
 		thread t3([num10k, tnum10k] {
-			loadRandNum(num10k, 10000, 0, 100000);
+			loadRandNum(num10k, 10000, 0, 1000000);
 			copyArray(num10k, tnum10k, 10000);
 		});
 		t3.detach();
 		thread t4([num100k, tnum100k] {
-			loadRandNum(num100k, 100000, 0, 1000000);
+			loadRandNum(num100k, 100000, 0, 10000000);
 			copyArray(num100k, tnum100k, 100000);
 		});
 		t4.detach();
 		thread t5([num1m, tnum1m] {
-			loadRandNum(num1m, 1000000, 0, 10000000);
+			loadRandNum(num1m, 1000000, 0, 100000000);
 			copyArray(num1m, tnum1m, 1000000);
 		});
 		t5.join();
+		cout << "Done!" << endl << endl;
 	} while (0);
+
+	Timestamp timer;
+	
+	cout << "Sort algorithm time record:" << endl;
+	cout << setw(10) << "Data size";
+	cout << setw(15) << "insertionSort" << setw(15) << "bubbleSort" <<
+		setw(15) << "selectionSort" << setw(15) << "shellSort" <<
+		setw(15) << "mergeSort" << setw(15) << "quickSort" <<
+		setw(15) << "heapSort" << setw(15) << "radixSort" << endl;
+
+	cout << setw(10) << "100";
+	timer.update();
+	insertionSort(tnum100, 0, 100);
+	cout << setw(15) << timer.getElapsedTimeInMilliSec;
+	copyArray(num1m, tnum1m, 100);
+	timer.update();
+	selectionSort(tnum100, 0, 100);
+	cout << setw(15) << timer.getElapsedTimeInMilliSec;
+	copyArray(num1m, tnum1m, 100);
+
+
+	cout << setw(10) << "1000";
+	
+
+	cout << setw(10) << "10000";
+	
+	
+	cout << setw(10) << "100000";
+
+
+	cout << setw(10) << "1000000";
+
+
 #endif
 
 #if EOHOD == 'H'
