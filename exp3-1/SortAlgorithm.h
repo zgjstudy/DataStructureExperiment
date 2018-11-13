@@ -134,6 +134,31 @@ void mergeSort(T* data, T* t, int s, int e)
 }
 
 template <typename T, typename Comp = DefaultComp<T> >
+void mergeSortWithoutOptimize(T* data, T* t, int s, int e)
+{
+	if (s >= e - 1)
+		return;
+	int m = s + (e - s) / 2;
+	mergeSortWithoutOptimize(data, t, s, m);
+	mergeSortWithoutOptimize(data, t, m, e);
+
+	int p1 = s, p2 = m, pt = s;
+	while (p1 < m && p2 < e)
+	{
+		if (Comp::prior(data[p1], data[p2]))
+			t[pt++] = data[p1++];
+		else
+			t[pt++] = data[p2++];
+	}
+	while (p1 < m)
+		t[pt++] = data[p1++];
+	while (p2 < e)
+		t[pt++] = data[p2++];
+	for (int i = s; i < e; ++i)
+		data[i] = t[i];
+}
+
+template <typename T, typename Comp = DefaultComp<T> >
 int findpivot(T* data, int s, int e)
 {
 	int m = (s + e) << 1;
@@ -169,6 +194,16 @@ inline int partition(T* data, int s, int e)
 			swap<T>(data, ++mi, k); //将data[k]交换至原mi之后，使L子序列向右扩展
 	swap<T>(data, s, mi); //候选轴点归位
 	return mi; //返回轴点的秩
+}
+
+template <typename T, typename Comp = DefaultComp<T> >
+void quickSortWithoutOptimize(T* data, int s, int e)
+{
+	if (s >= e - 1)
+		return;
+	int k = partition<T, Comp>(data, s, e);
+	quickSortWithoutOptimize(data, s, k);
+	quickSortWithoutOptimize(data, k + 1, e);
 }
 
 template <typename T, typename Comp = DefaultComp<T> >

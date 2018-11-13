@@ -36,9 +36,161 @@ void copyArray(T* a, T* b, int n)
 	}
 }
 
-void testhelp(Timestamp& timer)
+void testhelp(int* num, int n)
 {
+	double time[11] = {};
+	bool signal[11] = {};
 
+	cout << setw(10) << n;
+
+	thread t0([num, n, time, signal] () mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		insertionSort(tnum, 0, n);
+		time[0] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[0] = true;
+	});
+	t0.detach();
+
+	thread t1([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		bubbleSort(tnum, 0, n);
+		time[1] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[1] = true;
+	});
+	t1.detach();
+
+	thread t2([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		selectionSort(tnum, 0, n);
+		time[2] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[2] = true;
+	});
+	t2.detach();
+
+	thread t3([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		shellSort(tnum, n);
+		time[3] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[3] = true;
+	});
+	t3.detach();
+
+	thread t4([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		int* ttnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		mergeSortWithoutOptimize(tnum, ttnum, 0, n);
+		time[4] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		delete[] ttnum;
+		signal[4] = true;
+	});
+	t4.detach();
+
+	thread t5([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		int* ttnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		mergeSort(tnum, ttnum, 0, n);
+		time[5] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		delete[] ttnum;
+		signal[5] = true;
+	});
+	t5.detach();
+
+	thread t6([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		quickSortWithoutOptimize(tnum, 0, n);
+		time[6] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[6] = true;
+	});
+	t6.detach();
+
+	thread t7([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		quickSort(tnum, 0, n);
+		time[7] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[7] = true;
+	});
+	t7.detach();
+
+	thread t8([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		sort(tnum, tnum + n);
+		time[8] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[8] = true;
+	});
+	t8.detach();
+
+	thread t9([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		heapSort(tnum, n);
+		time[9] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		signal[9] = true;
+	});
+	t9.detach();
+
+	thread t10([num, n, time, signal]() mutable {
+		int* tnum = new int[n];
+		int* ttnum = new int[n];
+		int* cnt = new int[n];
+		copyArray(num, tnum, n);
+		Timestamp timer;
+		timer.update();
+		radixSort(tnum, ttnum, n, 10, 10, cnt);
+		time[10] = timer.getElapsedTimeInMilliSec();
+		delete[] tnum;
+		delete[] ttnum;
+		signal[10] = true;
+	});
+	t10.detach();
+
+	for (int cnt = 0; cnt < 11; cnt = 0)
+		for (int i = 0; i < 11; ++i)
+			if (signal[i])
+				cnt++;
+
+	cout << n;
+	for (int i = 0; i < 11; ++i)
+		cout << setw(15) << time[i];
+	cout << endl;
 }
 
 int main()
@@ -95,38 +247,31 @@ int main()
 		cout << "Done!" << endl << endl;
 	} while (0);
 
-	Timestamp timer;
-	
-	cout << "Sort algorithm time record:" << endl;
+	cout << "Sort algorithm time record(Millisecond):" << endl;
 	cout << setw(10) << "Data size";
-	cout << setw(15) << "insertionSort" << setw(15) << "bubbleSort" <<
-		setw(15) << "selectionSort" << setw(15) << "shellSort" <<
-		setw(15) << "mergeSort" << setw(15) << "quickSort" <<
-		setw(15) << "heapSort" << setw(15) << "radixSort" << endl;
+	cout << setw(15) << "insertionSort" << setw(15) << "bubbleSort"
+		<< setw(15) << "selectionSort" << setw(15) << "shellSort" << setw(15) << "mergeStNotOpt"
+		<< setw(15) << "mergeSort" << setw(15) << "quickStNotOpt" << setw(15) << "quickSort" << setw(15) << "quicksort(STL)"
+		<< setw(15) << "heapSort" << setw(15) << "radixSort" << endl;
 
-	cout << setw(10) << "100";
-	timer.update();
-	insertionSort(tnum100, 0, 100);
-	cout << setw(15) << timer.getElapsedTimeInMilliSec;
-	copyArray(num1m, tnum1m, 100);
-	timer.update();
-	selectionSort(tnum100, 0, 100);
-	cout << setw(15) << timer.getElapsedTimeInMilliSec;
-	copyArray(num1m, tnum1m, 100);
+	testhelp(num100, 100);
+	testhelp(num1k, 1000);
+	testhelp(num10k, 10000);
+	testhelp(num100k, 100000);
+	testhelp(num1m, 1000000);
 
-
-	cout << setw(10) << "1000";
-	
-
-	cout << setw(10) << "10000";
-	
-	
-	cout << setw(10) << "100000";
-
-
-	cout << setw(10) << "1000000";
-
-
+	delete[]num100;
+	delete[]tnum100;
+	delete[]ttnum100;
+	delete[]num10k;
+	delete[]tnum10k;
+	delete[]ttnum10k;
+	delete[]num100k;
+	delete[]tnum100k;
+	delete[]ttnum100k;
+	delete[]num1m;
+	delete[]tnum1m;
+	delete[]ttnum1m;
 #endif
 
 #if EOHOD == 'H'
