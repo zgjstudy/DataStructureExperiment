@@ -1,3 +1,6 @@
+//防止栈溢出，把栈扩100倍
+#pragma comment(linker,"/STACK:102400000,102400000")
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -9,7 +12,7 @@
 #include "TIME.h"
 using namespace std;
 
-#define NUMOFSORT 7 //numbre of sort algorithms
+#define NUMOFSORT 7 //number of sort algorithms
 
 enum SORT_TYPE	//Define the sorting algorithm execution order
 {
@@ -29,88 +32,59 @@ enum SORT_TYPE	//Define the sorting algorithm execution order
 void init();
 
 //加载随机数,可设置最大最小值
-void loadRandNum(int* a, int num, int min = 0, int max = 10000000);
+void loadRandNum(int* a, int num, int min = 0, int max = 10000000, fstream& fs);
 
 //加载随机数,不可设置最大最小值,但提升了加载效率
-void loadRandNumEx(int* a, int num);
+void loadRandNumEx(int* a, int num, fstream& fs);
 
 //复制数组
 void copyArray(int* a, int* b, int n);
 
 //测试辅助函数
-void testhelp(int* num, int n);
+void testhelp(int* num, int n, fstream& fs);
 
 int main()
 {
 	cout << "Begin." << endl;
+	fstream fs;
+	fs.open("randnum.txt");
+	if (!fs.is_open())
+	{
+		cerr << "Can't find File!";
+		exit(-1);
+	}
 
-	int *num10 = new int[15];
-	int *num100 = new int[105];
-	int *num1k = new int[1005];
-	int *num10k = new int[10005];
-	int *num100k = new int[100005];
-	int *num1m = new int[1000005];
 	int *num10m = new int[10000005];
 
-	do	//读取随机数
-	{
-		cout << "Loading rand numbers...";
-		loadRandNum(num10, 10);
-		thread t1([num100] {
-			loadRandNumEx(num100, 100);
-		});
-		t1.detach();
-		thread t2([num1k] {
-			loadRandNumEx(num1k, 1000);
-		});
-		t2.detach();
-		thread t3([num10k] {
-			loadRandNumEx(num10k, 10000);
-		});
-		t3.join();
-		thread t4([num100k] {
-			loadRandNumEx(num100k, 100000);
-		});
-		t4.detach();
-		thread t5([num1m] {
-			loadRandNumEx(num1m, 1000000);
-		});
-		t5.detach();
-		thread t6([num10m] {
-			loadRandNumEx(num10m, 10000000);
-		});
-		t6.join();
-		cout << "Done!" << endl << endl;
-	} while (0);
+
+	cout << "Loading rand numbers...";
+	
+	loadRandNumEx(num10m, 10000000);
+	cout << "Done!" << endl << endl;
 
 	init();
 
 	//测试排序函数
-	testhelp(num10, 10);
-	testhelp(num100, 100);
-	testhelp(num1k, 1000);
-	testhelp(num10k, 10000);
-	testhelp(num100k, 100000);
-	testhelp(num1m, 1000000);
+	testhelp(num10m, 10);
+	testhelp(num10m, 100);
+	testhelp(num10m, 1000);
+	testhelp(num10m, 10000);
+	testhelp(num10m, 100000);
+	testhelp(num10m, 1000000);
 	testhelp(num10m, 10000000);
 	
-	delete[]num1k;
-	delete[]num100;
-	delete[]num10k;
-	delete[]num100k;
-	delete[]num1m;
 	delete[]num10m;
 
 	system("pause");
 	return 0;
 }
 
-void testhelp(int* num, int n)
+void testhelp(int* num, int n, fstream& fs)
 {
 	int* tnum = new int[n];
 	int* ttnum = new int[n];
 	Timestamp timer; //计时器
-	cout << setw(9) << n;
+	cout << n << ",";
 
 	//根据设置的顺序遍历排序算法
 	for (int i = 0; i < NUMOFSORT; ++i)
@@ -231,34 +205,22 @@ void init()
 	cout << endl;
 }
 
-void loadRandNum(int* a, int num, int min, int max)
+void loadRandNum(int* a, int num, int min, int max, fstream& fs)
 {
-	ifstream ifs("randnum.txt");
-	if (!ifs.is_open())
-	{
-		cerr << "Can't find File!";
-		exit(-1);
-	}
 	double temp;
 	for (int i = 0; i < num; ++i)
 	{
-		ifs >> temp;
+		fs >> temp;
 		a[i] = int(temp * INT_MAX) % (max - min) + min;
 	}
 }
 
-void loadRandNumEx(int* a, int num)
+void loadRandNumEx(int* a, int num, fstream& fs)
 {
-	ifstream ifs("randnum.txt");
-	if (!ifs.is_open())
-	{
-		cerr << "Can't find File!";
-		exit(-1);
-	}
 	double temp;
 	for (int i = 0; i < num; ++i)
 	{
-		ifs >> temp;
+		fs >> temp;
 		a[i] = temp * 100000000;
 	}
 }
