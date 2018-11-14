@@ -22,11 +22,9 @@ auto Min(T& a, T& b)
 }
 
 template <typename T>
-void swap(T* data, int s, int e)
+inline void swap(T* data, int s, int e)
 {
-	T temp = data[s];
-	data[s] = data[e];
-	data[e] = temp;
+	data[e] ^= data[s] ^= data[e] ^= data[s];
 }
 
 template <typename T>
@@ -110,7 +108,7 @@ void mergeSort(T* data, T* t, int s, int e)
 {
 	if (e - s < THRESHOLD)
 	{
-		insertionSort<T, Comp>(data, s, e);
+		selectionSort<T, Comp>(data, s, e);
 		return;
 	}
 	int m = s + (e - s) / 2;
@@ -134,60 +132,10 @@ void mergeSort(T* data, T* t, int s, int e)
 }
 
 template <typename T, typename Comp = DefaultComp<T> >
-void mergeSortWithoutOptimize(T* data, T* t, int s, int e)
+inline int partitionRand(T* data, int s, int e)
 {
-	if (s >= e - 1)
-		return;
-	int m = s + (e - s) / 2;
-	mergeSortWithoutOptimize(data, t, s, m);
-	mergeSortWithoutOptimize(data, t, m, e);
-
-	int p1 = s, p2 = m, pt = s;
-	while (p1 < m && p2 < e)
-	{
-		if (Comp::prior(data[p1], data[p2]))
-			t[pt++] = data[p1++];
-		else
-			t[pt++] = data[p2++];
-	}
-	while (p1 < m)
-		t[pt++] = data[p1++];
-	while (p2 < e)
-		t[pt++] = data[p2++];
-	for (int i = s; i < e; ++i)
-		data[i] = t[i];
-}
-
-template <typename T, typename Comp = DefaultComp<T> >
-int findpivot(T* data, int s, int e)
-{
-	int m = (s + e) << 1;
-	if (Comp::prior(data[s], data[e]))
-	{
-		if (Comp::prior(data[m], data[s]))
-			return s;
-		else if (Comp::prior(data[e], data[m]))
-			return e;
-		else
-			return m;
-	}
-	else
-	{
-		if (Comp::prior(data[s], data[m]))
-			return s;
-		else if (Comp::prior(data[m], data[e]))
-			return e;
-		else
-			return m;
-	}
-}
-
-template <typename T, typename Comp = DefaultComp<T> >
-inline int partition(T* data, int s, int e)
-{
-	int pivotindex = findpivot(data, s, e - 1);
-	T pivot = data[pivotindex];
-	swap<T>(data, pivotindex, s);
+	swap<T>(data, s, s + rand() % (e - s));
+	T pivot = data[s];
 	int mi = s;
 	for (int k = s + 1; k < e; k++) //自左向右扫描
 		if (Comp::prior(data[k], pivot)) //若当前元素data[k]小于pivot，则
@@ -199,9 +147,9 @@ inline int partition(T* data, int s, int e)
 template <typename T, typename Comp = DefaultComp<T> >
 void quickSortWithoutOptimize(T* data, int s, int e)
 {
-	if (s >= e - 1)
+	if (e - s < 2)
 		return;
-	int k = partition<T, Comp>(data, s, e);
+	int k = partitionRand<T, Comp>(data, s, e);
 	quickSortWithoutOptimize(data, s, k);
 	quickSortWithoutOptimize(data, k + 1, e);
 }
@@ -214,7 +162,7 @@ void quickSort(T* data, int s, int e)
 		insertionSort<T, Comp>(data, s, e);
 		return;
 	}
-	int k = partition<T, Comp>(data, s, e);
+	int k = partitionRand<T, Comp>(data, s, e);
 	quickSort(data, s, k);
 	quickSort(data, k + 1, e);
 }
@@ -371,8 +319,6 @@ void radixSort(T A[], T B[], int n, int k, int r, int cnt[])
 		for (j = 1; j < r; j++)
 			cnt[j] = cnt[j - 1] + cnt[j];
 
-		// Put records into bins, work from bottom of each bin.
-		// Since bins fill from bottom, j counts downwards
 		for (j = n - 1; j >= 0; j--)
 			B[--cnt[int(A[j] / rtoi) % r]] = A[j];
 
