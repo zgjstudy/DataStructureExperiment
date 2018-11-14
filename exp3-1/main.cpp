@@ -12,7 +12,7 @@
 #include "TIME.h"
 using namespace std;
 
-#define NUMOFSORT 7 //number of sort algorithms
+#define NUMOFSORT 10 //number of sort algorithms
 
 enum SORT_TYPE	//Define the sorting algorithm execution order
 {
@@ -29,26 +29,26 @@ enum SORT_TYPE	//Define the sorting algorithm execution order
 };
 
 //初始化排序函数
-void init();
+void init(ofstream& fs);
 
 //加载随机数,可设置最大最小值
-void loadRandNum(int* a, int num, int min = 0, int max = 10000000, fstream& fs);
+void loadRandNum(int* a, int num, int min, int max, ifstream& fs);
 
 //加载随机数,不可设置最大最小值,但提升了加载效率
-void loadRandNumEx(int* a, int num, fstream& fs);
+void loadRandNumEx(int* a, int num, ifstream& fs);
 
 //复制数组
 void copyArray(int* a, int* b, int n);
 
 //测试辅助函数
-void testhelp(int* num, int n, fstream& fs);
+void testhelp(int* num, int n, ofstream& fs);
 
 int main()
 {
 	cout << "Begin." << endl;
-	fstream fs;
-	fs.open("randnum.txt");
-	if (!fs.is_open())
+	ifstream ifs("randnum.txt");
+	ofstream ofs("output.csv");
+	if (!ifs.is_open())
 	{
 		cerr << "Can't find File!";
 		exit(-1);
@@ -59,32 +59,32 @@ int main()
 
 	cout << "Loading rand numbers...";
 	
-	loadRandNumEx(num10m, 10000000);
+	loadRandNumEx(num10m, 10000000, ifs);
+	ifs.close();
 	cout << "Done!" << endl << endl;
 
-	init();
+	init(ofs);
 
 	//测试排序函数
-	testhelp(num10m, 10);
-	testhelp(num10m, 100);
-	testhelp(num10m, 1000);
-	testhelp(num10m, 10000);
-	testhelp(num10m, 100000);
-	testhelp(num10m, 1000000);
-	testhelp(num10m, 10000000);
-	
+	for (int i = 10, c = 0; i < 1000000; i *= (++c & 1 ? 5 : 2))
+	{
+		cout << "Sorting " << i << " numbers...";
+		testhelp(num10m, i, ofs);
+		cout << "Done." << endl;
+	}
+	ofs.clear();
 	delete[]num10m;
 
 	system("pause");
 	return 0;
 }
 
-void testhelp(int* num, int n, fstream& fs)
+void testhelp(int* num, int n, ofstream& fs)
 {
 	int* tnum = new int[n];
 	int* ttnum = new int[n];
 	Timestamp timer; //计时器
-	cout << n << ",";
+	fs << n << ",";
 
 	//根据设置的顺序遍历排序算法
 	for (int i = 0; i < NUMOFSORT; ++i)
@@ -94,31 +94,31 @@ void testhelp(int* num, int n, fstream& fs)
 			copyArray(num, tnum, n);
 			timer.update();
 			mergeSort(tnum, ttnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case QUICK_SORT_WITHOUT_OPTIMIZE:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSortWithoutOptimize(tnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case QUICK_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSort(tnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case SORT_STL:
 			copyArray(num, tnum, n);
 			timer.update();
 			sort(tnum, tnum + n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case HEAP_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			heapSort(tnum, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case RADIX_SORT:
 		{
@@ -126,7 +126,7 @@ void testhelp(int* num, int n, fstream& fs)
 			copyArray(num, tnum, n);
 			timer.update();
 			radixSort(tnum, ttnum, n, 10, 10, cnt);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			delete[] cnt;
 		}
 		break;
@@ -134,78 +134,78 @@ void testhelp(int* num, int n, fstream& fs)
 			copyArray(num, tnum, n);
 			timer.update();
 			shellSort(tnum, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case INSERTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			insertionSort(tnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case BUBBLE_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			bubbleSort(tnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		case SHELECTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			selectionSort(tnum, 0, n);
-			cout << setw(15) << timer.getElapsedTimeInMilliSec();
+			fs << timer.getElapsedTimeInMilliSec() << ",";
 			break;
 		default:
 			break;
 		}
-	cout << endl;
+	fs << n << endl;
 	delete[] tnum;
 	delete[] ttnum;
 }
 
-void init()
+void init(ofstream& fs)
 {
-	cout << "Sort algorithm time record(Millisecond):" << endl;
-	cout << setw(9) << "Data size";
+	fs << "Sort algorithm time record(Millisecond):" << endl;
+	fs << setw(9) << "Data size";
 	for (int i = 0; i < NUMOFSORT; ++i)
 		switch ((SORT_TYPE)i)
 		{
 		case MERGE_SORT:
-			cout << setw(15) << "mergeSort";
+			fs << "mergeSort" << ",";
 			break;
 		case QUICK_SORT_WITHOUT_OPTIMIZE:
-			cout << setw(15) << "quickStNotOpt";
+			fs << "quickStNotOpt" << ",";
 			break;
 		case QUICK_SORT:
-			cout << setw(15) << "quickSort";
+			fs << "quickSort" << ",";
 			break;
 		case SORT_STL:
-			cout << setw(15) << "sort(STL)";
+			fs << "sort(STL)" << ",";
 			break;
 		case HEAP_SORT:
-			cout << setw(15) << "heapSort";
+			fs << "heapSort" << ",";
 			break;
 		case RADIX_SORT:
-			cout << setw(15) << "radixSort";
+			fs << "radixSort" << ",";
 			break;
 		case SHELL_SORT:
-			cout << setw(15) << "shellSort";
+			fs << "shellSort" << ",";
 			break;
 		case INSERTION_SORT:
-			cout << setw(15) << "insertionSort";
+			fs << "insertionSort" << ",";
 			break;
 		case BUBBLE_SORT:
-			cout << setw(15) << "bubbleSort";
+			fs << "bubbleSort" << ",";
 			break;
 		case SHELECTION_SORT:
-			cout << setw(15) << "selectionSort";
+			fs << "selectionSort" << ",";
 			break;
 		default:
 			break;
 		}
-	cout << endl;
+	fs << endl;
 }
 
-void loadRandNum(int* a, int num, int min, int max, fstream& fs)
+void loadRandNum(int* a, int num, int min, int max, ifstream& fs)
 {
 	double temp;
 	for (int i = 0; i < num; ++i)
@@ -215,7 +215,7 @@ void loadRandNum(int* a, int num, int min, int max, fstream& fs)
 	}
 }
 
-void loadRandNumEx(int* a, int num, fstream& fs)
+void loadRandNumEx(int* a, int num, ifstream& fs)
 {
 	double temp;
 	for (int i = 0; i < num; ++i)
