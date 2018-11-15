@@ -12,17 +12,18 @@
 #include "TIME.h"
 using namespace std;
 
-#define NUMOFSORT 10 //number of sort algorithms
+#define NUMOFSORT 11 //number of sort algorithms
 
 enum SORT_TYPE	//Define the sorting algorithm execution order
-{
+{	
 	MERGE_SORT = 0,
-	QUICK_SORT_WITHOUT_OPTIMIZE,
-	QUICK_SORT,
+	MERGE_SORT_WITHOUT_OPTIMIZE,
 	RADIX_SORT,
+	SORT_STL,
+	QUICK_SORT,
+	QUICK_SORT_WITHOUT_OPTIMIZE,
 	HEAP_SORT,
 	SHELL_SORT,
-	SORT_STL,
 	INSERTION_SORT,
 	BUBBLE_SORT,
 	SHELECTION_SORT,
@@ -41,7 +42,7 @@ void loadRandNumEx(int* a, int num, ifstream& fs);
 void copyArray(int* a, int* b, int n);
 
 //测试辅助函数
-void testhelp(int* num, int n, ofstream& fs);
+void testhelp(int* num, int n, ofstream& fs, int numOfSort = NUMOFSORT);
 
 int main()
 {
@@ -54,32 +55,41 @@ int main()
 		exit(-1);
 	}
 
-	int *num10m = new int[10000005];
+	int *num20m = new int[20000005];
 
 
 	cout << "Loading rand numbers...";
 	
-	loadRandNumEx(num10m, 10000000, ifs);
+	loadRandNumEx(num20m, 20000000, ifs);
 	ifs.close();
 	cout << "Done!" << endl << endl;
 
 	init(ofs);
 
 	//测试排序函数
-	for (int i = 10, c = 0; i < 1000000; i *= (++c & 1 ? 5 : 2))
+	cout << "Sorting " << 10 << " numbers for " << NUMOFSORT << " sort algorithms...";
+	testhelp(num20m, 10, ofs);
+	cout << "Done." << endl;
+	for (int i = 20, j = 10, c = 0; i < 10000; j *= (++c % 9 == 0 ? 10 : 1), i += j)
 	{
-		cout << "Sorting " << i << " numbers...";
-		testhelp(num10m, i, ofs);
+		cout << "Sorting " << i << " numbers for " << NUMOFSORT << " sort algorithms...";
+		testhelp(num20m, i, ofs);
+		cout << "Done." << endl;
+	}
+	for (int i = 100000, j = i, c = 0; i <= 10000000; j *= (c++ % 10 == 9 ? 10 : 1), i += j)
+	{
+		cout << "Sorting " << i << " numbers for " << 8 << " sort algorithms...";
+		testhelp(num20m, i, ofs, 8);
 		cout << "Done." << endl;
 	}
 	ofs.clear();
-	delete[]num10m;
+	delete[]num20m;
 
 	system("pause");
 	return 0;
 }
 
-void testhelp(int* num, int n, ofstream& fs)
+void testhelp(int* num, int n, ofstream& fs, int numOfSort)
 {
 	int* tnum = new int[n];
 	int* ttnum = new int[n];
@@ -87,38 +97,45 @@ void testhelp(int* num, int n, ofstream& fs)
 	fs << n << ",";
 
 	//根据设置的顺序遍历排序算法
-	for (int i = 0; i < NUMOFSORT; ++i)
+	for (int i = 0; i < numOfSort; ++i)
+	{
 		switch ((SORT_TYPE)i)
 		{
+		case MERGE_SORT_WITHOUT_OPTIMIZE:
+			copyArray(num, tnum, n);
+			timer.update();
+			mergeSortWithoutOptimize(tnum, ttnum, 0, n);
+			fs << timer.getElapsedTimeInMilliSec();
+			break;
 		case MERGE_SORT:	//以下同理
 			copyArray(num, tnum, n);
 			timer.update();
 			mergeSort(tnum, ttnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case QUICK_SORT_WITHOUT_OPTIMIZE:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSortWithoutOptimize(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case QUICK_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case SORT_STL:
 			copyArray(num, tnum, n);
 			timer.update();
 			sort(tnum, tnum + n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case HEAP_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			heapSort(tnum, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case RADIX_SORT:
 		{
@@ -126,7 +143,7 @@ void testhelp(int* num, int n, ofstream& fs)
 			copyArray(num, tnum, n);
 			timer.update();
 			radixSort(tnum, ttnum, n, 10, 10, cnt);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			delete[] cnt;
 		}
 		break;
@@ -134,30 +151,33 @@ void testhelp(int* num, int n, ofstream& fs)
 			copyArray(num, tnum, n);
 			timer.update();
 			shellSort(tnum, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case INSERTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			insertionSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case BUBBLE_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			bubbleSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		case SHELECTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			selectionSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec() << ",";
+			fs << timer.getElapsedTimeInMilliSec();
 			break;
 		default:
 			break;
 		}
-	fs << n << endl;
+		if (i < numOfSort)
+			fs << ",";
+	}
+	fs << endl;
 	delete[] tnum;
 	delete[] ttnum;
 }
@@ -165,43 +185,50 @@ void testhelp(int* num, int n, ofstream& fs)
 void init(ofstream& fs)
 {
 	fs << "Sort algorithm time record(Millisecond):" << endl;
-	fs << setw(9) << "Data size";
+	fs << setw(9) << "Data size" << ",";
 	for (int i = 0; i < NUMOFSORT; ++i)
+	{
 		switch ((SORT_TYPE)i)
 		{
+		case MERGE_SORT_WITHOUT_OPTIMIZE:
+			fs << "mergeSortNotOpt";
+			break;
 		case MERGE_SORT:
-			fs << "mergeSort" << ",";
+			fs << "mergeSort";
 			break;
 		case QUICK_SORT_WITHOUT_OPTIMIZE:
-			fs << "quickStNotOpt" << ",";
+			fs << "quickStNotOpt";
 			break;
 		case QUICK_SORT:
-			fs << "quickSort" << ",";
+			fs << "quickSort";
 			break;
 		case SORT_STL:
-			fs << "sort(STL)" << ",";
+			fs << "sort(STL)";
 			break;
 		case HEAP_SORT:
-			fs << "heapSort" << ",";
+			fs << "heapSort";
 			break;
 		case RADIX_SORT:
-			fs << "radixSort" << ",";
+			fs << "radixSort";
 			break;
 		case SHELL_SORT:
-			fs << "shellSort" << ",";
+			fs << "shellSort";
 			break;
 		case INSERTION_SORT:
-			fs << "insertionSort" << ",";
+			fs << "insertionSort";
 			break;
 		case BUBBLE_SORT:
-			fs << "bubbleSort" << ",";
+			fs << "bubbleSort";
 			break;
 		case SHELECTION_SORT:
-			fs << "selectionSort" << ",";
+			fs << "selectionSort";
 			break;
 		default:
 			break;
 		}
+		if (i < NUMOFSORT)
+			fs << ",";
+	}
 	fs << endl;
 }
 

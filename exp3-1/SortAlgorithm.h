@@ -45,15 +45,8 @@ template <typename T, typename Comp = DefaultComp<T> >
 void insertionSort(T* data, int s, int e)
 {
 	for (int i = s; i < e; ++i)
-	{
-		for (int j = i; j > s; --j)
-		{
-			if (!Comp::prior(data[j - 1], data[j]))
-			{
+		for (int j = i; j > s && !Comp::prior(data[j - 1], data[j]); --j)
 				swap<T>(data, j - 1, j);
-			}
-		}
-	}
 }
 
 template <typename T, typename Comp = DefaultComp<T> >
@@ -104,11 +97,38 @@ void shellSort(T* data, int n)
 }
 
 template <typename T, typename Comp = DefaultComp<T> >
+void mergeSortWithoutOptimize(T* data, T* t, int s, int e)
+{
+	if (e - s < 2)
+	{
+		return;
+	}
+	int m = s + (e - s) / 2;
+	mergeSortWithoutOptimize(data, t, s, m);
+	mergeSortWithoutOptimize(data, t, m, e);
+
+	int p1 = s, p2 = m, pt = s;
+	while (p1 < m && p2 < e)
+	{
+		if (Comp::prior(data[p1], data[p2]))
+			t[pt++] = data[p1++];
+		else
+			t[pt++] = data[p2++];
+	}
+	while (p1 < m)
+		t[pt++] = data[p1++];
+	while (p2 < e)
+		t[pt++] = data[p2++];
+	for (int i = s; i < e; ++i)
+		data[i] = t[i];
+}
+
+template <typename T, typename Comp = DefaultComp<T> >
 void mergeSort(T* data, T* t, int s, int e)
 {
 	if (e - s < THRESHOLD)
 	{
-		selectionSort<T, Comp>(data, s, e);
+		insertionSort<T, Comp>(data, s, e);
 		return;
 	}
 	int m = s + (e - s) / 2;
