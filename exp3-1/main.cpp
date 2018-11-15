@@ -12,9 +12,11 @@
 #include "TIME.h"
 using namespace std;
 
-#define NUMOFSORT 11 //number of sort algorithms
-
-enum SORT_TYPE	//Define the sorting algorithm execution order
+int numOfSort = 11;			//number of sort algorithms
+const double limit = 50;	//当某种排序时间达到这个值就在接下来的测试中跳过这种排序
+const double delta = 1.5;	//容错值
+const int dataSize = 100000;	//数据量 十万差不多了
+enum SORT_TYPE				//Define the sorting algorithm execution order
 {	
 	MERGE_SORT = 0,
 	MERGE_SORT_WITHOUT_OPTIMIZE,
@@ -27,7 +29,7 @@ enum SORT_TYPE	//Define the sorting algorithm execution order
 	INSERTION_SORT,
 	BUBBLE_SORT,
 	SHELECTION_SORT,
-};
+};	//此顺序为测试得到的运行速度排序
 
 //初始化排序函数
 void init(ofstream& fs);
@@ -42,7 +44,7 @@ void loadRandNumEx(int* a, int num, ifstream& fs);
 void copyArray(int* a, int* b, int n);
 
 //测试辅助函数
-void testhelp(int* num, int n, ofstream& fs, int numOfSort = NUMOFSORT);
+void testhelp(int* num, int n, ofstream& fs, bool);
 
 int main()
 {
@@ -55,87 +57,102 @@ int main()
 		exit(-1);
 	}
 
-	int *num20m = new int[20000005];
-
+	int *num100k = new int[dataSize + 5];
 
 	cout << "Loading rand numbers...";
 	
-	loadRandNumEx(num20m, 20000000, ifs);
+	loadRandNumEx(num100k, dataSize, ifs);
 	ifs.close();
 	cout << "Done!" << endl << endl;
 
 	init(ofs);
 
 	//测试排序函数
-	cout << "Sorting " << 10 << " numbers for " << NUMOFSORT << " sort algorithms...";
-	testhelp(num20m, 10, ofs);
-	cout << "Done." << endl;
-	for (int i = 20, j = 10, c = 0; i < 10000; j *= (++c % 9 == 0 ? 10 : 1), i += j)
+	for (int i = 100; i <= dataSize; i += 100)
 	{
-		cout << "Sorting " << i << " numbers for " << NUMOFSORT << " sort algorithms...";
-		testhelp(num20m, i, ofs);
+		if (numOfSort == 0)
+			break;
+		cout << "Sorting " << i << " numbers for " << numOfSort << " sort algorithms...";
+		if(i <= 10000)	//确保所有排序算法至少测量到数据量规模为10000
+			testhelp(num100k, i, ofs, 0);
+		else
+			testhelp(num100k, i, ofs, 1);
 		cout << "Done." << endl;
 	}
-	for (int i = 100000, j = i, c = 0; i <= 10000000; j *= (c++ % 10 == 9 ? 10 : 1), i += j)
-	{
-		cout << "Sorting " << i << " numbers for " << 8 << " sort algorithms...";
-		testhelp(num20m, i, ofs, 8);
-		cout << "Done." << endl;
-	}
-	ofs.clear();
-	delete[]num20m;
+
+	cout << "Test finished." << endl;
+	ofs.close();
+	delete[]num100k;
 
 	system("pause");
 	return 0;
 }
 
-void testhelp(int* num, int n, ofstream& fs, int numOfSort)
+void testhelp(int* num, int n, ofstream& fs, bool cutable = 1)
 {
 	int* tnum = new int[n];
 	int* ttnum = new int[n];
 	Timestamp timer; //计时器
 	fs << n << ",";
-
+	double time;
 	//根据设置的顺序遍历排序算法
-	for (int i = 0; i < numOfSort; ++i)
+	for (int i = 0, t = numOfSort; i < numOfSort; ++i)
 	{
 		switch ((SORT_TYPE)i)
 		{
-		case MERGE_SORT_WITHOUT_OPTIMIZE:
-			copyArray(num, tnum, n);
-			timer.update();
-			mergeSortWithoutOptimize(tnum, ttnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+		case MERGE_SORT_WITHOUT_OPTIMIZE:	//未优化的归并排序
+			copyArray(num, tnum, n);		//复制数组
+			timer.update();					//刷新计时器
+			mergeSortWithoutOptimize(tnum, ttnum, 0, n);	//排序
+			time = timer.getElapsedTimeInMilliSec();	//计时
+			fs << time;	//打印时间
+			//if (cutable && time > limit && time < limit + delta)	//若超时则关闭此算法, delta用来防止误差
+			//	numOfSort = 0;
 			break;
 		case MERGE_SORT:	//以下同理
 			copyArray(num, tnum, n);
 			timer.update();
 			mergeSort(tnum, ttnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			//if (cutable && time > limit && time < limit + delta)
+			//	numOfSort = 1;
 			break;
 		case QUICK_SORT_WITHOUT_OPTIMIZE:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSortWithoutOptimize(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			//if (cutable && time > limit && time < limit + delta)
+			//	numOfSort = 5;
 			break;
 		case QUICK_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			quickSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			//if (cutable && time > limit && time < limit + delta)
+			//	numOfSort = 4;
 			break;
 		case SORT_STL:
 			copyArray(num, tnum, n);
 			timer.update();
 			sort(tnum, tnum + n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			//if (cutable && time > limit && time < limit + delta)
+			//	numOfSort = 3;
 			break;
 		case HEAP_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			heapSort(tnum, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			if (cutable && time > limit && time < limit + delta)
+				numOfSort = 6;
 			break;
 		case RADIX_SORT:
 		{
@@ -143,38 +160,53 @@ void testhelp(int* num, int n, ofstream& fs, int numOfSort)
 			copyArray(num, tnum, n);
 			timer.update();
 			radixSort(tnum, ttnum, n, 10, 10, cnt);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
 			delete[] cnt;
+			fs << time;
+			//if (cutable && time > limit && time < limit + delta)
+			//	numOfSort = 2;
 		}
 		break;
 		case SHELL_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			shellSort(tnum, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			if (cutable && time > limit && time < limit + delta)
+				numOfSort = 7;
 			break;
 		case INSERTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			insertionSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			if (cutable && time > limit)
+				numOfSort = 8;
 			break;
 		case BUBBLE_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			bubbleSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			if (cutable && time > limit)
+				numOfSort = 9;
 			break;
 		case SHELECTION_SORT:
 			copyArray(num, tnum, n);
 			timer.update();
 			selectionSort(tnum, 0, n);
-			fs << timer.getElapsedTimeInMilliSec();
+			time = timer.getElapsedTimeInMilliSec();
+			fs << time;
+			if (cutable && time > limit)
+				numOfSort = 10;
 			break;
 		default:
 			break;
 		}
-		if (i < numOfSort)
+		if (i < t - 1)
 			fs << ",";
 	}
 	fs << endl;
@@ -186,7 +218,7 @@ void init(ofstream& fs)
 {
 	fs << "Sort algorithm time record(Millisecond):" << endl;
 	fs << setw(9) << "Data size" << ",";
-	for (int i = 0; i < NUMOFSORT; ++i)
+	for (int i = 0; i < numOfSort; ++i)
 	{
 		switch ((SORT_TYPE)i)
 		{
@@ -226,7 +258,7 @@ void init(ofstream& fs)
 		default:
 			break;
 		}
-		if (i < NUMOFSORT)
+		if (i < numOfSort - 1)
 			fs << ",";
 	}
 	fs << endl;
