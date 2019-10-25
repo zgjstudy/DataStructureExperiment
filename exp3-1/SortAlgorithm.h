@@ -24,7 +24,7 @@ auto Min(T& a, T& b)
 template <typename T>
 inline void swap(T* data, int s, int e)
 {
-	data[e] ^= data[s] ^= data[e] ^= data[s];
+	T temp = data[s]; data[s] = data[e]; data[e] = temp;
 }
 
 template <typename T>
